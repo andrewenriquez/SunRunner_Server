@@ -1,12 +1,13 @@
 let express = require('express');
 let router = express.Router();
 let fs = require('fs');
-let jwt = require("jwt-simple");
-let Device = require("../models/device");
-let Measurement = require("../models/measurement");
-let User = require("../models/users");
+//let jwt = require("jwt-simple");
+//let Device = require("../models/device");
+let Pothole = require("../models/pothole");
+//let User = require("../models/users");
 
 // Secret key for JWT
+/*
 let secret = fs.readFileSync(__dirname + '/../../jwtkey').toString();
 let authenticateRecentEndpoint = true;
 
@@ -26,42 +27,51 @@ function authenticateAuthToken(req) {
         return null;
     }
 }
-
-// POST: Adds reported measurment to the database
+*/
+// POST: Adds reported pothole to the database and returns total hit count for the pothole
 // Authentication: APIKEY. The device reporting must have a valid APIKEY
 router.post("/hit", function(req, res) {
     let responseJson = {
         success : false,
         message : "",
+        totalHits: 1
     };
 
     // Ensure the POST data include required properties                                               
+    /*
     if( !req.body.hasOwnProperty("deviceId") ) {
         responseJson.message = "Request missing deviceId parameter.";
         return res.status(201).send(JSON.stringify(responseJson));
     }
+    */
     
+    /*
     if( !req.body.hasOwnProperty("apikey") ) {
         responseJson.message = "Request missing apikey parameter.";
         return res.status(201).send(JSON.stringify(responseJson));
     }
-    
-    if( !req.body.hasOwnProperty("longitude") ) {
+    */
+    if( !req.body.hasOwnProperty("long") ) {
         responseJson.message = "Request missing longitude parameter.";
         return res.status(201).send(JSON.stringify(responseJson));
     }
     
-    if( !req.body.hasOwnProperty("latitude") ) {
+    if( !req.body.hasOwnProperty("lat") ) {
         responseJson.message = "Request missing latitude parameter.";
         return res.status(201).send(JSON.stringify(responseJson));
     }
     
-    if( !req.body.hasOwnProperty("time") ) {
-        responseJson.message = "Request missing time parameter.";
+    if( !req.body.hasOwnProperty("uv") ) {
+        responseJson.message = "Request missing uv parameter.";
+        return res.status(201).send(JSON.stringify(responseJson));
+    }
+
+    if( !req.body.hasOwnProperty("GPS") ) {
+        responseJson.message = "Request missing GPS parameter.";
         return res.status(201).send(JSON.stringify(responseJson));
     }
     
-    // Find the device in DB and verify the apikey                                           
+    /*// Find the device and verify the apikey                                           
     Device.findOne({ deviceId: req.body.deviceId }, function(err, device) {
         if (device === null) {
             responseJson.message = "Device ID " + req.body.deviceId + " not registered.";
@@ -72,32 +82,61 @@ router.post("/hit", function(req, res) {
             responseJson.message = "Invalid apikey for device ID " + req.body.deviceId + ".";
             return res.status(201).send(JSON.stringify(responseJson));
         }
-               
-             //Create a new measurment and save the measurment to the database
-                 var measurment = new Measurment({
-                     loc: [req.body.longitude, req.body.latitude],
-                     speed: req.body.speed,
-                     uv: req.body.uv,
-                     dateReported: Date.now(),
-                 });
-                 responseJson.message = "New measurment recorded.";
-                            
+        */
+        // Check to see if a pothole was already recoreded within 10 meters (or thereabouts, this needs to be verified)
+        let findPotholeQuery = Pothole.findOne({
+             loc: {
+                 $near : {
+                     $geometry: { type: "Point",  coordinates: [req.body.long, req.body.lat] },
+                     $maxDistance: 10.0
+                 }
+             }
+         });
 
-             // Save the measurment data. 
-             measurment.save(function(err, newMeasurment) {
+         // Execute the query     
+         findPotholeQuery.exec(function (err, pothole) {
+            if (err) {
+               console.log(err);
+               responseJson.message = "Error accessing db.";
+               return res.status(201).send(JSON.stringify(responseJson));
+             }
+             
+             // Pothole was found, update the hit count and last reported time
+             if (pothole) {
+                 pothole.totalHits++;
+                 pothole.lastReported = Date.now();
+                 responseJson.message = "location data updated successfully.";
+                 responseJson.totalHits = pothole.totalHits;
+             }
+             // New pothole found
+             else {
+                 // Create a new pothole and save the pothole to the database
+                 var pothole = new Pothole({
+                     loc: [req.body.long, req.body.lat],
+                     uv: req.body.uv,
+                     totalHits: 1,
+                     lastReported: Date.now(),
+                     firstReported: Date.now(),
+                 });
+                 responseJson.message = "New location data recorded successfully.";
+             }                
+
+             // Save the pothole data. 
+             pothole.save(function(err, newPothole) {
                  if (err) {
                      responseJson.status = "ERROR";
                      responseJson.message = "Error saving data in db." + err;
                      return res.status(201).send(JSON.stringify(responseJson));
                  }
-                 
+
                  responseJson.success = true;
                  return res.status(201).send(JSON.stringify(responseJson));
-            });  
+            });
+         });  
     });
-});
+//});
 
-// GET: Returns all measurments first reported in the previous specified number of days
+// GET: Returns all potholes first reported in the previous specified number of days
 // Authentication: Token. A user must be signed in to access this endpoint
 router.get("/recent/:days", function(req, res) {
     let days = req.params.days;
@@ -105,9 +144,9 @@ router.get("/recent/:days", function(req, res) {
     let responseJson = {
         success: true,
         message: "",
-        measurments: [],
+        potholes: [],
     };
-    
+    /*
     if (authenticateRecentEndpoint) {
         decodedToken = authenticateAuthToken(req);
         if (!decodedToken) {
@@ -116,7 +155,7 @@ router.get("/recent/:days", function(req, res) {
             return res.status(401).json(responseJson);
         }
     }
-    
+    */
     
     // Check to ensure the days is between 1 and 30 (inclsuive), return error if not
     if (days < 1 || days > 30) {
@@ -125,8 +164,8 @@ router.get("/recent/:days", function(req, res) {
         return res.status(200).json(responseJson);
     }
     
-    // Find all measurments reported in the spcified number of days
-    let measurmentQuery = Measurment.find({
+    // Find all potholes reported in the spcified number of days
+    let recentPotholesQuery = Pothole.find({
         "firstReported": 
         {
             $gte: new Date((new Date().getTime() - (days * 24 * 60 * 60 * 1000)))
@@ -134,26 +173,27 @@ router.get("/recent/:days", function(req, res) {
     }).sort({ "date": -1 });
     
     
-    measurmentQuery.exec({}, function(err, recentMeasurments) {
+    recentPotholesQuery.exec({}, function(err, recentPotholes) {
         if (err) {
             responseJson.success = false;
             responseJson.message = "Error accessing db.";
             return res.status(200).send(JSON.stringify(responseJson));
         }
         else {  
-            let numMeasurments = 0;    
-            for (let newMeasurment of recentMeasurments) {
-                // Add measurment data to the respone's measurments array
-                numMeasurments++; 
-                responseJson.measurments.push({
-                    latitude: newMeasurment.loc[1],
-                    longitude: newMeasurment.loc[0],
-                    speed: newMeasurment.speed,
-                    uvIndex: newMeasurment.uv,
-                    date: newMeasurment.dateReported,                 
+            let numRecentPotholes = 0;
+            let numTotalHits = 0;      
+            for (let pothole of recentPotholes) {
+                // Add pothole data to the respone's potholes array
+                numRecentPotholes++;
+                numTotalHits += pothole.totalHits; 
+                responseJson.potholes.push({
+                    latitude: pothole.loc[1],
+                    longitude: pothole.loc[0],
+                    date: pothole.firstReported,
+                    totalHits: pothole.totalHits
                 });
             }
-            responseJson.message = "In the past " + days + " days, " + numMeasurments + " measurments have been taken.";
+            responseJson.message = "In the past " + days + " days, " + numRecentPotholes + " potholes have been hit " + numTotalHits + " times.";
             return res.status(200).send(JSON.stringify(responseJson));
         }
     })
