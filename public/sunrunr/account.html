@@ -1,1 +1,73 @@
-TESTING SIGN IN
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>SunRunner - Home</title>
+        <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+            
+        <link ref="/sunrunr/stylesheets/sunrunr.css" rel="stylesheet">
+        <script ref="/sunrunr/javascript/account.js"></script>
+        <script ref="/sunrunr/javascript/signout.js"></script>            
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+
+
+    <body>         
+        <nav>
+            <div class="nav-wrapper blue-grey darken-2">
+                <a href="account.html" class="brand-logo left"><img id="logo" src="images/logo_main.png"><span id="name">SunRunr</span></a>
+                <ul class="right ">
+                    <li>
+                        <a class="dropdown-trigger btn" href="#" data-target="dropdown1"><i class="material-icons">more_vert</i></a>
+                        <ul id="dropdown1" class="dropdown-content" tabindex="0">
+                            <li tabindex="0"><a href="account.html">Home</a></li>
+                            <li tabindex="0"><a href="recentpotholes.html">Recent</a></li>
+                            <li class="divider" tabindex="0"></li>
+                            <li tabindex="0"><a href="#!" id="signout">Sign out</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+                
+        <div class="row" id="main" style="display: block;">
+            <div class="col s12 m12">
+                <ul class="collection with-header">
+                    <li class="collection-header"><h5>Account details</h5></li>
+                    <li class="collection-item">Email: <span id="email">[EMAIL GOES HERE]</span></li>
+                    <li class="collection-item">Name: <span id="fullName">[FULL NAME GOES HERE]</span></li>
+                    <li class="collection-item">Last Access: <span id="lastAccess">[TIME STAMP GOES HERE]</span></li>
+                </ul>
+                
+                <ul class="collection with-header" id="devices">
+                    <li class="collection-header">
+                        <h5>Devices</h5>
+                    </li>
+                    
+                    <li class="collection-item">ID: 540040001051373331333230, APIKEY: Lmo8K5fSnRRlWzrdKppw98OpJAUOL06Y 
+                        <button id="ping-540040001051373331333230" class="waves-effect waves-light btn">Ping</button>
+                    </li>
+
+                    <li class="collection-item" id="addDeviceForm">
+                        <label for="deviceId">New Device ID:</label>
+                        <input type="text" id="deviceId" name="deviceId" col="30">
+                        <button id="registerDevice" class="waves-effect waves-light btn">Register</button> 
+                        <button id="cancel" class="waves-effect waves-light btn">Cancel</button> 
+                    </li>
+
+                    <li class="collection-item" id="addDeviceControl">
+                        <a href="#!" id="addDevice">Add Device</a>
+                    </li>
+                </ul>
+                
+                <div class="red-text text-darken-2" id="error"></div>
+            </div>
+        </div>
+                  
+        <script>$('.dropdown-trigger').dropdown();</script>
+    </body>      
+</html>
