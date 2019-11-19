@@ -39,7 +39,7 @@ function sendSigninRequest() {
     else {
       $('#signin').click(sendSigninRequest);
        $('#password').keypress(function(event) {
-          if( event.which === 13 ) {
+          if( event.which === 13 ) { 
              sendSigninRequest();
           }
        });
