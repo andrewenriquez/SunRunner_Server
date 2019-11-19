@@ -41,7 +41,7 @@ function sendSigninRequest() {
        $('#password').keypress(function(event) {
           if( event.which === 13 ) { 
              sendSigninRequest();
-          }
-       });
+          } 
+       });/*TE?STING*/
     }
   });
