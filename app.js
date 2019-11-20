@@ -16,6 +16,7 @@ var labRouter = require('./routes/lab');
 // Added for final project
 var potholesRouter = require('./routes/potholes');
 var usersRouter = require('./routes/users');
+var devicesRouter = require('./routes/devices');
 //---------------------------------------------------
 
 var app = express();
@@ -60,6 +61,7 @@ app.use('/lab',labRouter);
 
 app.use('/potholes', potholesRouter);
 
+app.use('/devices', devicesRouter);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));
