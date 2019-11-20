@@ -103,6 +103,8 @@ router.post("/hit", function(req, res) {
              // Pothole was found, update the hit count and last reported time
              if (pothole) {
                  pothole.totalHits++;
+                 let deviceFound = Device.find({deviceId});
+                 console.log(deviceFound);
                  pothole.lastReported = Date.now();
                  responseJson.message = "location data updated successfully.";
                  responseJson.totalHits = pothole.totalHits;
