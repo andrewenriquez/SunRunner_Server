@@ -32,7 +32,7 @@ function displayMostRecentPothole(data, textSatus, jqXHR) {
       let longitude = data.potholes[data.potholes.length-1].longitude;
       let i =0;
         for(i =0; i < data.potholes.length; i++){
-          potholeReport += "<tr><td>" + data.potholes[i].latitude<td> +"</td></tr>";
+          potholeReport += "<tr><td>" + data.potholes[i].latitude + "</td></tr>";
         }
     }
       potholeReport += "</table>";
