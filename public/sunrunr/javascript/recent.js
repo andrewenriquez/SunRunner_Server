@@ -24,7 +24,7 @@ function displayMostRecentPothole(data, textSatus, jqXHR) {
    if (data.potholes.length > 0) {
 	   let latitude = data.potholes[data.potholes.length-1].latitude;
      let longitude = data.potholes[data.potholes.length-1].longitude;
-   }
+     
      /*let potholeReport = "";
    potholeReport += "<table>";
     if (data.potholes.length > 0) {
@@ -40,9 +40,11 @@ function displayMostRecentPothole(data, textSatus, jqXHR) {
 
      //let uv = data.potholes[data.potholes.length-1].uv;
       // Add descriptive text of the pothole recently reported 
-      potholeReport ="Number of webhooks detected " + data.potholes[data.potholes.length-1].totalHits + " times.";
+      potholeReport = data.potholes.length +
+	                  " Number of webhooks detected " +
+                    data.potholes[data.potholes.length-1].totalHits + " times.";
       //potholeReport = "{latitude:"+latitude +"   longitude:"+ longitude+"}";
-   
+  }
 	    
    $("#potholeText").html(potholeReport);
 
