@@ -1,14 +1,15 @@
 let express = require('express');
 let router = express.Router();
 let fs = require('fs');
-//let jwt = require("jwt-simple");
-//let Device = require("../models/device");
+let jwt = require("jwt-simple");
+let Device = require("../models/device");
 let Pothole = require("../models/pothole");
-//let User = require("../models/users");
+let User = require("../models/users");
 
 // Secret key for JWT
-/*
-let secret = fs.readFileSync(__dirname + '/../../jwtkey').toString();
+
+let secret = "superSecret";
+//let secret = fs.readFileSync(__dirname + '/../../jwtkey').toString();
 let authenticateRecentEndpoint = true;
 
 function authenticateAuthToken(req) {
@@ -27,7 +28,7 @@ function authenticateAuthToken(req) {
         return null;
     }
 }
-*/
+
 // POST: Adds reported pothole to the database and returns total hit count for the pothole
 // Authentication: APIKEY. The device reporting must have a valid APIKEY
 router.post("/hit", function(req, res) {
