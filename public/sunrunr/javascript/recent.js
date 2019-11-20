@@ -23,13 +23,24 @@ function displayMostRecentPothole(data, textSatus, jqXHR) {
    let potholeReport = "No potholes have been reported in the last three days.";
    if (data.potholes.length > 0) {
 	   let latitude = data.potholes[data.potholes.length-1].latitude;
-	   let longitude = data.potholes[data.potholes.length-1].longitude;
+     let longitude = data.potholes[data.potholes.length-1].longitude;
+     
+     let potholeReport = "";
+    potholeReport += "<table>";
+    if (data.potholes.length > 0) {
+      let latitude = data.potholes[data.potholes.length-1].latitude;
+      let longitude = data.potholes[data.potholes.length-1].longitude;
+      let i =0;
+      for(i =0; i < data.potholes.length; i++){
+        potholeReport += "<tr><td>" + data.potholes[i].latitude<td> + "</td></tr>";  
+      }
+      potholeReport += "</table>";
+
      //let uv = data.potholes[data.potholes.length-1].uv;
       // Add descriptive text of the pothole recently reported 
       /*potholeReport = data.potholes.length +
 	                  " potholes have been reported in the last three days. The most recent pothole (shown above) was hit " +
                     data.potholes[data.potholes.length-1].totalHits + " times.";*/
-      potholeReport = "{latitude:"+latitude +"   longitude:"+ longitude+"}";
    }
 	    
    $("#potholeText").html(potholeReport);
