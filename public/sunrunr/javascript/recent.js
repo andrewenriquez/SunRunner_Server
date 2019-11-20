@@ -7,7 +7,7 @@ function getRecentPotholes() {
   $.ajax({
     url: '/potholes/recent/14',
     type: 'GET',
-    //headers: { 'x-auth': window.localStorage.getItem("authToken") },
+    headers: { 'x-auth': window.localStorage.getItem("authToken") },
     dataType: 'json'
   })
     .done(displayMostRecentPothole)
