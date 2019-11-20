@@ -39,19 +39,18 @@ router.post("/hit", function(req, res) {
     };
 
     // Ensure the POST data include required properties                                               
-    /*
+    
     if( !req.body.hasOwnProperty("deviceId") ) {
         responseJson.message = "Request missing deviceId parameter.";
         return res.status(201).send(JSON.stringify(responseJson));
     }
-    */
     
-    /*
+    
     if( !req.body.hasOwnProperty("apikey") ) {
         responseJson.message = "Request missing apikey parameter.";
         return res.status(201).send(JSON.stringify(responseJson));
     }
-    */
+    
     if( !req.body.hasOwnProperty("long") ) {
         responseJson.message = "Request missing longitude parameter.";
         return res.status(201).send(JSON.stringify(responseJson));
@@ -72,7 +71,7 @@ router.post("/hit", function(req, res) {
         return res.status(201).send(JSON.stringify(responseJson));
     }
     
-    /*// Find the device and verify the apikey                                           
+    // Find the device and verify the apikey                                           
     Device.findOne({ deviceId: req.body.deviceId }, function(err, device) {
         if (device === null) {
             responseJson.message = "Device ID " + req.body.deviceId + " not registered.";
@@ -83,7 +82,6 @@ router.post("/hit", function(req, res) {
             responseJson.message = "Invalid apikey for device ID " + req.body.deviceId + ".";
             return res.status(201).send(JSON.stringify(responseJson));
         }
-        */
         // Check to see if a pothole was already recoreded within 10 meters (or thereabouts, this needs to be verified)
         let findPotholeQuery = Pothole.findOne({
              loc: {
@@ -135,7 +133,7 @@ router.post("/hit", function(req, res) {
             });
          });  
     });
-//});
+});
 
 // GET: Returns all potholes first reported in the previous specified number of days
 // Authentication: Token. A user must be signed in to access this endpoint
@@ -147,7 +145,7 @@ router.get("/recent/:days", function(req, res) {
         message: "",
         potholes: [],
     };
-    /*
+    
     if (authenticateRecentEndpoint) {
         decodedToken = authenticateAuthToken(req);
         if (!decodedToken) {
@@ -156,7 +154,7 @@ router.get("/recent/:days", function(req, res) {
             return res.status(401).json(responseJson);
         }
     }
-    */
+    
     
     // Check to ensure the days is between 1 and 30 (inclsuive), return error if not
     if (days < 1 || days > 30) {
