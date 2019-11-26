@@ -103,9 +103,11 @@ router.post("/hit", function(req, res) {
              // Pothole was found, update the hit count and last reported time
              if (pothole) {
                  pothole.totalHits++;
+                 pothole.gpsSpeed = req.body.GPS;
                  pothole.lastReported = Date.now();
                  responseJson.message = "location data updated successfully.";
                  responseJson.totalHits = pothole.totalHits;
+
              }
              // New pothole found
              else {
@@ -113,6 +115,7 @@ router.post("/hit", function(req, res) {
                  var pothole = new Pothole({
                      loc: [req.body.long, req.body.lat],
                      uv: req.body.uv,
+                     gpsSpeed: req.body.GPS,
                      totalHits: 1,
                      lastReported: Date.now(),
                      firstReported: Date.now(),
@@ -189,7 +192,11 @@ router.get("/recent/:days", function(req, res) {
                     latitude: pothole.loc[1],
                     longitude: pothole.loc[0],
                     date: pothole.firstReported,
-                    totalHits: pothole.totalHits
+                    totalHits: pothole.totalHits,
+                    uv: pothole.uv,
+                    gpsSpeed: pothole.gpsSpeed,
+                    firstReported: pothole.firstReported,
+                    lastReported: pothole.lastReported
                 });
             }
             responseJson.message = "In the past " + days + " days, " + numRecentPotholes + " potholes have been hit " + numTotalHits + " times.";

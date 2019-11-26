@@ -5,7 +5,7 @@ let map = null;
 function getRecentPotholes() {
    //console.log("recent button pressed");
   $.ajax({
-    url: '/potholes/recent/14',
+    url: '/potholes/recent/30',
     type: 'GET',
     headers: { 'x-auth': window.localStorage.getItem("authToken") },
     dataType: 'json'
@@ -22,31 +22,54 @@ function displayMostRecentPothole(data, textSatus, jqXHR) {
 	let longitude = -110.9501;
   let potholeReport = "No potholes have been reported in the last three days.";
    if (data.potholes.length > 0) {
-	   let latitude = data.potholes[data.potholes.length-1].latitude;
-     let longitude = data.potholes[data.potholes.length-1].longitude;
-     
-     /*let potholeReport = "";
-   potholeReport += "<table>";
-    if (data.potholes.length > 0) {
-      let latitude = data.potholes[data.potholes.length-1].latitude;
-      let longitude = data.potholes[data.potholes.length-1].longitude;
-      let i =0;
-        for(i =0; i < data.potholes.length; i++){
-          potholeReport += "<tr><td>" + data.potholes[i].latitude + "</td></tr>";
-        }
-    }
-      potholeReport += "</table>";*/
+
+    potholeReport = data.potholes.length +
+    " different webhooks detected at different locations.";
+
+    // Start of the list displaying all data points.
+    potholeReport += "<ul><li>Most recent:</li>";
+
+    //looping through all potholes and concatenating them to a list.
+     for (var i = data.potholes.length - 1; i >= 0; i--) {
+      let latitude = data.potholes[i].latitude;
+      let longitude = data.potholes[i].longitude;
+      let uvRay = data.potholes[i].uv;
+      let hits = data.potholes[i].totalHits;
+      let firstRep = data.potholes[i].firstReported;
+      let lastRep = data.potholes[i].lastReported;
+      let gpsSpeed = data.potholes[i].gpsSpeed;
 
 
-     //let uv = data.potholes[data.potholes.length-1].uv;
-      // Add descriptive text of the pothole recently reported 
-      potholeReport = data.potholes.length +
-	                  " Number of webhooks detected " +
-                    data.potholes[data.potholes.length-1].totalHits + " times.";
-      //potholeReport = "{latitude:"+latitude +"   longitude:"+ longitude+"}";
+      potholeReport += "<li>Total Hits: "
+      +hits+", latitude: "+latitude+", longitude: "+longitude+", Speed: "+gpsSpeed+", UV Strength: "+uvRay+
+      ", First Reported: "+firstRep+", last Reported: "+lastRep+"</li>"
+
+     }
+     potholeReport+= "</ul>" //close list before displaying.
+
   }
-	    
+
+  let uluru = {lat: latitude, lng: longitude};
+  let map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 10,
+    center: uluru
+ });  
    $("#potholeText").html(potholeReport);
+
+  
+   	// Add markers for all potholes            
+     for (let pothole of data.potholes) {
+      uluru = {lat: pothole.latitude, lng: pothole.longitude};
+      let marker = new google.maps.Marker({
+         position: uluru,
+         map: map,
+         label: {
+            text: "" + pothole.totalHits,
+            color: 'black',
+            fontSize: "10px"
+         },
+      });
+   }    
 
 }
 
