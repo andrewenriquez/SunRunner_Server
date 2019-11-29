@@ -3,15 +3,22 @@ function sendRegisterRequest() {
     let password = $('#password').val();
     let fullName = $('#fullName').val();
     let passwordConfirm = $('#passwordConfirm').val();
+    let strongRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/;   
+
     
     // Check to make sure the passwords match
-    // FIXME: Check to ensure strong password 
     if (password != passwordConfirm) {
       $('#ServerResponse').html("<span class='red-text text-darken-2'>Passwords do not match.</span>");
       $('#ServerResponse').show();
       return;
     }
-    
+    // Check to ensure strong password (must contain at least one: lowercase, uppercase, number, specail character, and be at least 8 characters)
+    if( !(password.test(strongRegex.value)) ) {
+      $('#ServerResponse').html("<span class='red-text text-darken-2'>Password not strong enough.</span>");
+      $('#ServerResponse').show();
+      return;
+    }
+
     $.ajax({
      url: '/users/register',
      type: 'POST',
