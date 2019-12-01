@@ -48,7 +48,7 @@ function displayMostRecentPothole(data, textSatus, jqXHR) {
      potholeReport+= "</ul>" //close list before displaying.
 
   }
-
+  /*
   //What does this do??
   let uluru = {lat: latitude, lng: longitude};
   let map = new google.maps.Map(document.getElementById('map'), {
@@ -72,7 +72,7 @@ function displayMostRecentPothole(data, textSatus, jqXHR) {
         },
     });
   }    
-
+  */
 }
 
 function recentPotholeError(jqXHR, textStatus, errorThrown) {
