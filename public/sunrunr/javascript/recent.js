@@ -5,14 +5,14 @@ let map = null;
 function getRecentPotholes() {
    //console.log("recent button pressed");
   $.ajax({
-    url: '/potholes/recent/30',
+    url: '/data/recent/30',
     type: 'GET',
     headers: { 'x-auth': window.localStorage.getItem("authToken") },
     dataType: 'json'
   })
     .done(displayMostRecentPothole)
     .fail(recentPotholeError);
-    
+
 }
 
 function displayMostRecentPothole(data, textSatus, jqXHR) {
@@ -49,27 +49,29 @@ function displayMostRecentPothole(data, textSatus, jqXHR) {
 
   }
 
+  //What does this do??
   let uluru = {lat: latitude, lng: longitude};
   let map = new google.maps.Map(document.getElementById('map'), {
     zoom: 10,
     center: uluru
  });  
-   $("#potholeText").html(potholeReport);
 
+  //What does this do??
+  $("#potholeText").html(potholeReport);
   
-   	// Add markers for all potholes            
-     for (let pothole of data.potholes) {
-      uluru = {lat: pothole.latitude, lng: pothole.longitude};
-      let marker = new google.maps.Marker({
-         position: uluru,
-         map: map,
-         label: {
-            text: "" + pothole.totalHits,
-            color: 'black',
-            fontSize: "10px"
-         },
-      });
-   }    
+ // Add markers for all potholes            
+  for (let pothole of data.potholes) {
+    uluru = {lat: pothole.latitude, lng: pothole.longitude};
+    let marker = new google.maps.Marker({
+        position: uluru,
+        map: map,
+        label: {
+             text: "" + pothole.totalHits,
+             color: 'black',
+             fontSize: "10px"
+        },
+    });
+  }    
 
 }
 
@@ -95,6 +97,7 @@ function initRecent() {
     $("#testButton").click(getRecentPotholes);
     //getRecentPotholes();
 }
+
 
 /*
 function test () {
