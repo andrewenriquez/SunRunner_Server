@@ -92,7 +92,8 @@ function recentPotholeError(jqXHR, textStatus, errorThrown) {
 function initRecent() {
     // Allow the user to refresh by clicking a button.
     $("#refreshRecent").click(getRecentPotholes);
-    getRecentPotholes();
+    $("#testButton").click(getRecentPotholes);
+    //getRecentPotholes();
 }
 
 /*
@@ -124,5 +125,5 @@ $(function() {
   else {
     initRecent();
   }
-  // Register event listeners
+  // Register event listeners here instead of in init?
 });
