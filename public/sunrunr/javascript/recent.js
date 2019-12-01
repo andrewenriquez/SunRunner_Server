@@ -95,6 +95,7 @@ function initRecent() {
     getRecentPotholes();
 }
 
+/*
 function test () {
   $("button").html("unclick");
 
@@ -104,11 +105,24 @@ function test () {
 // Handle authentication on page load
 
 $(document).ready(function() {
-
   getRecentPotholes();
    $("button").click(getRecentPotholes);
    // If there's no authToken stored, redirect user to the signin page (i.e., index.html)
    //if (!window.localStorage.getItem("authToken")) {
    //   window.location.replace("index.html");
    //}
+});
+*/
+
+// Handle authentication on page load
+$(function() {
+  // If there's no authToekn stored, redirect user to 
+  // the sign-in page (which is index.html)
+  if (!window.localStorage.getItem("authToken")) {
+    window.location.replace("index.html");
+  }
+  else {
+    initRecent();
+  }
+  // Register event listeners
 });
