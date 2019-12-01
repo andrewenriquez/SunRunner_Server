@@ -27,7 +27,7 @@ function authenticateAuthToken(req) {
     }
 }
 
-// POST: Adds reported measurment to the database
+// POST: Adds reported measurement to the database
 // Authentication: APIKEY. The device reporting must have a valid APIKEY
 router.post("/hit", function(req, res) {
     let responseJson = {
@@ -73,19 +73,19 @@ router.post("/hit", function(req, res) {
             return res.status(201).send(JSON.stringify(responseJson));
         }
                
-             //Create a new measurment and save the measurment to the database
-                 var measurment = new Measurment({
+             //Create a new measurement and save the measurement to the database
+                 var measurement = new Measurement({
                      loc: [req.body.longitude, req.body.latitude],
                      speed: req.body.speed,
                      uv: req.body.uv,
                      dateReported: Date.now(),
                      deviceId: req.body.deviceId
                  });
-                 responseJson.message = "New measurment recorded.";
+                 responseJson.message = "New measurement recorded.";
                             
 
-             // Save the measurment data. 
-             measurment.save(function(err, newMeasurment) {
+             // Save the measurement data. 
+             measurement.save(function(err, newMeasurement) {
                  if (err) {
                      responseJson.status = "ERROR";
                      responseJson.message = "Error saving data in db." + err;
@@ -98,7 +98,7 @@ router.post("/hit", function(req, res) {
     });
 });
 
-// GET: Returns all measurments first reported in the previous specified number of days
+// GET: Returns all measurements first reported in the previous specified number of days
 // Authentication: Token. A user must be signed in to access this endpoint
 router.get("/recent/:days", function(req, res) {
     let days = req.params.days;
@@ -106,7 +106,7 @@ router.get("/recent/:days", function(req, res) {
     let responseJson = {
         success: true,
         message: "",
-        measurments: [],
+        measurements: [],
     };
     
     if (authenticateRecentEndpoint) {
@@ -126,8 +126,8 @@ router.get("/recent/:days", function(req, res) {
         return res.status(200).json(responseJson);
     }
     
-    // Find all measurments reported in the spcified number of days
-    let measurmentQuery = Measurment.find({
+    // Find all measurements reported in the spcified number of days
+    let measurementQuery = Measurement.find({
         "firstReported": 
         {
             $gte: new Date((new Date().getTime() - (days * 24 * 60 * 60 * 1000)))
@@ -135,27 +135,27 @@ router.get("/recent/:days", function(req, res) {
     }).sort({ "date": -1 });
     
     
-    measurmentQuery.exec({}, function(err, recentMeasurments) {
+    measurementQuery.exec({}, function(err, recentMeasurements) {
         if (err) {
             responseJson.success = false;
             responseJson.message = "Error accessing db.";
             return res.status(200).send(JSON.stringify(responseJson));
         }
         else {  
-            let numMeasurments = 0;    
-            for (let newMeasurment of recentMeasurments) {
-                // Add measurment data to the respone's measurments array
-                numMeasurments++; 
-                responseJson.measurments.push({
-                    latitude: newMeasurment.loc[1],
-                    longitude: newMeasurment.loc[0],
-                    speed: newMeasurment.speed,
-                    uvIndex: newMeasurment.uv,
-                    date: newMeasurment.dateReported, 
-                    deviceID: newMeasurment.deviceId                
+            let numMeasurements = 0;    
+            for (let newMeasurement of recentMeasurements) {
+                // Add measurement data to the respone's measurements array
+                numMeasurements++; 
+                responseJson.measurements.push({
+                    latitude: newMeasurement.loc[1],
+                    longitude: newMeasurement.loc[0],
+                    speed: newMeasurement.speed,
+                    uvIndex: newMeasurement.uv,
+                    date: newMeasurement.dateReported, 
+                    deviceID: newMeasurement.deviceId                
                 });
             }
-            responseJson.message = "In the past " + days + " days, " + numMeasurments + " measurments have been taken.";
+            responseJson.message = "In the past " + days + " days, " + numMeasurements + " measurements have been taken.";
             return res.status(200).send(JSON.stringify(responseJson));
         }
     })
