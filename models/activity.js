@@ -2,12 +2,15 @@ var db = require("../db");
 
 var activitySchema = new db.Schema({
     type:          String,
-    avgUv:            Number,
-    avgSpeed:         Number,    
-    avgTemperture:  Number,
-    avgHumidity:    Number,
-    timeStart:   { type: Date, default: Date.now },    
-    timeStop: { type: Date, default: Date.now }
+    deviceId:       String,
+    measurement: [{
+        loc:            [{ type: [Number], index: '2dsphere'}],
+        uv:             Number,
+        speed:          Number,
+        timeReported:   { type: Date, default: Date.now }, 
+    }],     
+    temperture:  Number,
+    humidity:    Number,    
 });
 
 var Activity = db.model("Activity", activitySchema);

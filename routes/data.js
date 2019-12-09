@@ -4,8 +4,6 @@ let fs = require('fs');
 let jwt = require("jwt-simple");
 let path = require("path");
 let Device = require("../models/device");
-let Measurement = require("../models/measurement");
-let User = require("../models/users");
 let Activity = require("../models/activity"); 
 
 // Secret key for JWT
@@ -29,7 +27,7 @@ function authenticateAuthToken(req) {
         return null;
     }
 }
-
+/*
 function makeWeatherRequest(err, ){
     //Get weather information
     var zip = 90210;
@@ -49,8 +47,8 @@ function makeWeatherRequest(err, ){
         };
         res.render("weather", locals);
     });
-
 }
+*/
 
 // POST: Adds reported measurement and new activity to the database
 // Authentication: APIKEY. The device reporting must have a valid APIKEY
@@ -86,8 +84,8 @@ router.post("/hit", function(req, res) {
         return res.status(201).send(JSON.stringify(responseJson));
     }
 
-    if( !req.body.hasOwnProperty("timeReported") ) {
-        responseJson.message = "Request missing time parameter.";
+    if( !req.body.hasOwnProperty("speed") ) {
+        responseJson.message = "Request missing speed parameter.";
         return res.status(201).send(JSON.stringify(responseJson));
     }
     */
@@ -108,62 +106,82 @@ router.post("/hit", function(req, res) {
             return res.status(201).send(JSON.stringify(responseJson));
         }
                
-             //Create a new measurement and save the measurement to the database
-                 var measurement = new Measurement({
-                     loc: [req.body.longitude, req.body.latitude],
-                     speed: req.body.speed,
-                     uv: req.body.uv,
-                     timeReported: Date.now(),
-                     deviceId: req.body.deviceId,
-                     index: req.body.index 
-                 });
-                 responseJson.message = "New measurement recorded.";
-                            
+             
+            
+        //Check to see if activity started and create new activity
+        if(req.body.index = "start" ){       
 
-             // Save the measurement data. 
-             measurement.save(function(err, newMeasurement) {
-                 if (err) {
-                     responseJson.status = "ERROR";
-                     responseJson.message = "Error saving data in db." + err;
-                     return res.status(201).send(JSON.stringify(responseJson));
-                 }
+            //Create a new activity and save the activity to the database            
+            let activity = new Activity({                
+                //type:          String,
+                //temperture:  Number,
+                //humidity:    Number,
+                deviceId:       req.body.deviceId,
+                measurement: [{
+                    loc:            [req.body.longitude, req.body.latitude],
+                    uv:             req.body.uv,
+                    speed:          req.body.speed,
+                    timeReported:   Date.now(), 
+                }],     
                  
-                 responseJson.success = true;
-                 return res.status(201).send(JSON.stringify(responseJson));
-            }); 
-            
-            //Check to see if activity started and create new activity
-            if(measurement.index = "start" ){
-                
-                //Create a new activity and save the activity to the database
-                let activityStartTime = measurement.timeReported;
-                let activity = new Activity({
-                    timeStart: activityStartTime,  
-                });
-                responseJson.message = "New activity recorded.";
-                           
+            });
+            responseJson.message = "New activity recorded.";                        
 
-                // Save the activity data. 
-                activity.save(function(err, newActivity) {
-                    if (err) {
-                        responseJson.status = "ERROR";
-                        responseJson.message = "Error saving data in db." + err;
-                        return res.status(201).send(JSON.stringify(responseJson));
-                    }
-                    
-                    responseJson.success = true;
+            // Save the activity data. 
+            activity.save(function(err, newActivity) {
+                if (err) {
+                    responseJson.status = "ERROR";
+                    responseJson.message = "Error saving data in db." + err;
                     return res.status(201).send(JSON.stringify(responseJson));
-                }); 
-            }
-            
-            //Check to see if activity ended and set end time
-            if(measurement.index = "end" ){
-                Activity.update({ "timeStart": { $eq : activityStart } },
-                { $set: { "timeStop": measurement.timeReported }}, 
-                function(err, status) {
-                    console.log("Documents updated: " + status.nModified);
-                });         
-            }            
+                }
+                
+                responseJson.success = true;
+                return res.status(201).send(JSON.stringify(responseJson));
+            }); 
+
+            //Save start time for reference
+            let activityStartTime = new Date(activity.measurement.timeReported);
+        }
+
+
+        //Check to see if activity continue
+        if(req.body.index = "continue" ){                
+
+            //Add to measurement data array
+            Activity.findOne({ "measurement[0].timeReported": { $eq : activityStartTime } })
+            .update({ $push: { "measurement": {
+                        loc:            [req.body.longitude, req.body.latitude],
+                        uv:             req.body.uv,
+                        speed:          req.body.speed,
+                        timeReported:   Date.now(),
+                        }
+                    }
+            })             
+            .exec(function(err, status) {
+                console.log("Documents updated: " );
+             });                      
+           
+        }
+        
+
+        //Check to see if activity ended and set end time
+        if(req.body.index = "end" ){
+            //Add to measurement data array
+            Activity.findOne({ "measurement[0].timeReported": { $eq : activityStartTime } })
+            .update({ $push: { "measurement": {
+                        loc:            [req.body.longitude, req.body.latitude],
+                        uv:             req.body.uv,
+                        speed:          req.body.speed,
+                        timeReported:   Date.now(),
+                        }
+                    }
+            })
+            .update({ $set: {"timeStop":  Date.now() }})             
+            .exec(function(err, status) {
+                console.log("Documents updated: ");
+             });
+
+        }            
 
     });
 });
@@ -198,7 +216,7 @@ router.get("/summary/:days", function(req, res) {
     }
     
 
-    // Find all measurements reported in the spcified number of days
+    // Find all activities reported in the spcified number of days
     let activityQuery = Activity.find({
         "timeStop": 
         {
@@ -214,37 +232,23 @@ router.get("/summary/:days", function(req, res) {
             return res.status(200).send(JSON.stringify(responseJson));
         }
         
-        
         //Create list of activity data     
         let numActivities = 0;           
-        for (let newActivity of recentActivities) {   
+        for (let newActivity of recentActivities) { 
 
-            // Find all measurements within activity duration
-            let measurementQuery = Measurement.find({
-                $and: [{ timeReported: { $gte: newActivity.timeStart } }, { timeReported: { $lte: newActivity.timeStop } }]               
-
-            }).sort({ "timeReported": -1 });
-            measurementQuery.exec({}, function(err, recentMeasurements) {
-                if (err) {
-                    responseJson.success = false;
-                    responseJson.message = "Error accessing measurement db.";
-                    return res.status(200).send(JSON.stringify(responseJson));
-                }
-
-                //Calculate Average Speed 
-
-            });
-            
             // Add measurement data to the respone's measurements array
             numActivities++; 
-            responseJson.activities.push({                 
-                type:   newActivity.type,       
-                avgUv:  newActivity.avgUv,          
-                avgSpeed:   newActivity.avgSpeed,             
-                avgTemperture:  newActivity.avgTemperture,  
-                avgHumidity:    newActivity.avgHumidity,    
-                timeStart:  newActivity.timeStart,       
-                timeStop:   newActivity.timeStop,                    
+            responseJson.activities.push({
+                deviceId:       newActivity.deviceId,
+                //temperture:  Number,
+                //humidity:    Number,
+                measurement: [{
+                    loc:            [newActivity.longitude, newActivity.latitude],
+                    uv:             newActivity.uv,
+                    speed:         newActivity.speed,
+                    timeReported:  newActivity.timeReported, 
+                }],                    
+              
             });
         }
         responseJson.message = "In the past " + days + " days, you've done " + numActivities + " activities!";
