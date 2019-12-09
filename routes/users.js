@@ -7,8 +7,7 @@ let bcrypt = require("bcryptjs");
 let jwt = require("jwt-simple");
 
 /* Authenticate user */
-//var secret = fs.readFileSync(__dirname + '/../../jwtkey').toString();
-var secret = "superSecret";
+var secret = fs.readFileSync(__dirname + '/../../jwtkey').toString();
 
 router.post('/signin', function(req, res, next) {
   User.findOne({email: req.body.email}, function(err, user) {

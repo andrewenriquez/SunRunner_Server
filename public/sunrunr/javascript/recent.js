@@ -5,14 +5,14 @@ let map = null;
 function getRecentPotholes() {
    //console.log("recent button pressed");
   $.ajax({
-    url: '/potholes/recent/30',
+    url: '/data/recent/30',
     type: 'GET',
     headers: { 'x-auth': window.localStorage.getItem("authToken") },
     dataType: 'json'
   })
     .done(displayMostRecentPothole)
     .fail(recentPotholeError);
-    
+
 }
 
 function displayMostRecentPothole(data, textSatus, jqXHR) {
@@ -47,10 +47,32 @@ function displayMostRecentPothole(data, textSatus, jqXHR) {
      }
      potholeReport+= "</ul>" //close list before displaying.
 
-
-
   }
+  /*
+  //What does this do??
+  let uluru = {lat: latitude, lng: longitude};
+  let map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 10,
+    center: uluru
+ });  
 
+  //What does this do??
+  $("#potholeText").html(potholeReport);
+  
+ // Add markers for all potholes            
+  for (let pothole of data.potholes) {
+    uluru = {lat: pothole.latitude, lng: pothole.longitude};
+    let marker = new google.maps.Marker({
+        position: uluru,
+        map: map,
+        label: {
+             text: "" + pothole.totalHits,
+             color: 'black',
+             fontSize: "10px"
+        },
+    });
+  }    
+  */
 }
 
 function recentPotholeError(jqXHR, textStatus, errorThrown) {
@@ -72,9 +94,12 @@ function recentPotholeError(jqXHR, textStatus, errorThrown) {
 function initRecent() {
     // Allow the user to refresh by clicking a button.
     $("#refreshRecent").click(getRecentPotholes);
-    getRecentPotholes();
+    $("#testButton").click(getRecentPotholes);
+    //getRecentPotholes();
 }
 
+
+/*
 function test () {
   $("button").html("unclick");
 
@@ -84,11 +109,24 @@ function test () {
 // Handle authentication on page load
 
 $(document).ready(function() {
-
   getRecentPotholes();
    $("button").click(getRecentPotholes);
    // If there's no authToken stored, redirect user to the signin page (i.e., index.html)
    //if (!window.localStorage.getItem("authToken")) {
    //   window.location.replace("index.html");
    //}
+});
+*/
+
+// Handle authentication on page load
+$(function() {
+  // If there's no authToekn stored, redirect user to 
+  // the sign-in page (which is index.html)
+  if (!window.localStorage.getItem("authToken")) {
+    window.location.replace("index.html");
+  }
+  else {
+    initRecent();
+  }
+  // Register event listeners here instead of in init?
 });
