@@ -80,7 +80,7 @@ router.post("/hit", function(req, res) {
         responseJson.message = "Request missing latitude parameter.";
         return res.status(201).send(JSON.stringify(responseJson));
     }
-    
+    /*
     if( !req.body.hasOwnProperty("timeReported") ) {
         responseJson.message = "Request missing time parameter.";
         return res.status(201).send(JSON.stringify(responseJson));
@@ -90,7 +90,7 @@ router.post("/hit", function(req, res) {
         responseJson.message = "Request missing time parameter.";
         return res.status(201).send(JSON.stringify(responseJson));
     }
-
+    */
     if( !req.body.hasOwnProperty("index") ) {
         responseJson.message = "Request missing index parameter.";
         return res.status(201).send(JSON.stringify(responseJson));
@@ -253,3 +253,5 @@ router.get("/summary/:days", function(req, res) {
     });
 });
 
+
+module.exports = router;

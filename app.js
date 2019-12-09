@@ -15,7 +15,7 @@ var labRouter = require('./routes/lab');
 //---------------------------------------------------
 // Added for final project
 var dataRouter = require('./routes/data');
-var potholesRouter = require('./routes/potholes');
+//var potholesRouter = require('./routes/potholes');
 var usersRouter = require('./routes/users');
 var devicesRouter = require('./routes/devices');
 //---------------------------------------------------
