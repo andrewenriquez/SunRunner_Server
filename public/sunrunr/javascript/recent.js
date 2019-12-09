@@ -43,12 +43,14 @@ function displayMostRecentPothole(data, textSatus, jqXHR) {
       potholeReport += "<li>Total Hits: "
       +hits+", latitude: "+latitude+", longitude: "+longitude+", Speed: "+gpsSpeed+", UV Strength: "+uvRay+
       ", First Reported: "+firstRep+", last Reported: "+lastRep+"</li>"
-
+      $("#speed").html(gpsSpeed);
      }
      potholeReport+= "</ul>" //close list before displaying.
 
-  }
 
+
+  }
+/*
   let uluru = {lat: latitude, lng: longitude};
   let map = new google.maps.Map(document.getElementById('map'), {
     zoom: 10,
@@ -70,7 +72,7 @@ function displayMostRecentPothole(data, textSatus, jqXHR) {
          },
       });
    }    
-
+*/
 }
 
 function recentPotholeError(jqXHR, textStatus, errorThrown) {
