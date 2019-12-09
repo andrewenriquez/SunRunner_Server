@@ -43,7 +43,7 @@ function displayMostRecentPothole(data, textSatus, jqXHR) {
       potholeReport += "<li>Total Hits: "
       +hits+", latitude: "+latitude+", longitude: "+longitude+", Speed: "+gpsSpeed+", UV Strength: "+uvRay+
       ", First Reported: "+firstRep+", last Reported: "+lastRep+"</li>"
-
+      $("#speed").html(gpsSpeed);
      }
      potholeReport+= "</ul>" //close list before displaying.
 
