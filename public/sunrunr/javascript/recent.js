@@ -50,29 +50,7 @@ function displayMostRecentPothole(data, textSatus, jqXHR) {
 
 
   }
-/*
-  let uluru = {lat: latitude, lng: longitude};
-  let map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 10,
-    center: uluru
- });  
-   $("#potholeText").html(potholeReport);
 
-  
-   	// Add markers for all potholes            
-     for (let pothole of data.potholes) {
-      uluru = {lat: pothole.latitude, lng: pothole.longitude};
-      let marker = new google.maps.Marker({
-         position: uluru,
-         map: map,
-         label: {
-            text: "" + pothole.totalHits,
-            color: 'black',
-            fontSize: "10px"
-         },
-      });
-   }    
-*/
 }
 
 function recentPotholeError(jqXHR, textStatus, errorThrown) {
