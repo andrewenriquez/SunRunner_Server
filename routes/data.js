@@ -82,13 +82,13 @@ router.post("/hit", function(req, res) {
     if( !req.body.hasOwnProperty("timeReported") ) {
         responseJson.message = "Request missing time parameter.";
         return res.status(201).send(JSON.stringify(responseJson));
-    }
+    }*/
 
     if( !req.body.hasOwnProperty("speed") ) {
         responseJson.message = "Request missing speed parameter.";
         return res.status(201).send(JSON.stringify(responseJson));
     }
-    */
+    
     if( !req.body.hasOwnProperty("index") ) {
         responseJson.message = "Request missing index parameter.";
         return res.status(201).send(JSON.stringify(responseJson));
@@ -140,7 +140,7 @@ router.post("/hit", function(req, res) {
             }); 
 
             //Save start time for reference
-            let activityStartTime = new Date(activity.measurement.timeReported);
+            var activityStartTime = new Date(activity.measurement.timeReported);
         }
 
 
@@ -148,7 +148,7 @@ router.post("/hit", function(req, res) {
         if(req.body.index = "continue" ){                
 
             //Add to measurement data array
-            Activity.findOne({ "measurement[0].timeReported": { $eq : activityStartTime } })
+            Activity.findOne( {$eq : activityStartTime})
             .update({ $push: { "measurement": {
                         loc:            [req.body.longitude, req.body.latitude],
                         uv:             req.body.uv,
