@@ -27,15 +27,15 @@ function authenticateAuthToken(req) {
         return null;
     }
 }
-/*
-function makeWeatherRequest(err, ){
+
+function requestWeather(err, location ){
     //Get weather information
     var zip = 90210;
     request({
       method: "GET",
       uri: "http://api.openweathermap.org/data/2.5/weather",
       qs: {
-         zip: zip,
+         zip: location,
          units: "imperial",
          appid: "APIKEY"
       }
@@ -48,7 +48,7 @@ function makeWeatherRequest(err, ){
         res.render("weather", locals);
     });
 }
-*/
+
 
 // POST: Adds reported measurement and new activity to the database
 // Authentication: APIKEY. The device reporting must have a valid APIKEY

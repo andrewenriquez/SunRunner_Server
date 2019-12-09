@@ -3,11 +3,12 @@ let router = express.Router();
 let User = require("../models/users");
 let Device = require("../models/device");
 let fs = require('fs');
+let path = require("path");
 let bcrypt = require("bcryptjs");
 let jwt = require("jwt-simple");
 
 /* Authenticate user */
-var secret = fs.readFileSync(__dirname + '/../../jwtkey').toString();
+var secret = fs.readFileSync(path.join(__dirname, '../..', 'jwtkey')).toString();
 
 router.post('/signin', function(req, res, next) {
   User.findOne({email: req.body.email}, function(err, user) {
