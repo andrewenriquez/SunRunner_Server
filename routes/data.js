@@ -238,7 +238,7 @@ router.get("/summary", function(req, res) {
     }
     
     // Check to ensure the days is between 1 and 30 (inclsuive), return error if not
-    if (days < 1 || days > 30) {
+    if (days < 1 || days > 7) {
         responseJson.success = false;
         responseJson.message = "Invalid days parameter.";
         return res.status(200).json(responseJson);
@@ -273,6 +273,7 @@ router.get("/summary", function(req, res) {
                  averageSpeed:   newActivity.avgSpeed,
                  averageUV:      newActivity.avgUV,
                  activityType:   newActivity.type,
+                 date:           newActivity.created,
                  
                 //temperture:  Number,
                 //humidity:    Number,
