@@ -12,12 +12,14 @@ function sendRegisterRequest() {
       $('#ServerResponse').show();
       return;
     }
+    
     // Check to ensure strong password (must contain at least one: lowercase, uppercase, number, specail character, and be at least 8 characters)
-    if( !(password.test(strongRegex.value)) ) {
+    if( !(strongRegex.test(password)) ) {
       $('#ServerResponse').html("<span class='red-text text-darken-2'>Password not strong enough.</span>");
       $('#ServerResponse').show();
       return;
     }
+    
 
     $.ajax({
      url: '/users/register',
