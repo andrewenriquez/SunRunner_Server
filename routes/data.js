@@ -176,7 +176,7 @@ router.post("/hit", function(req, res) {
                             uv:             req.body.uv,
                             speed:          req.body.speed,
                             index:          req.body.index,
-                            timeReported:   Date.now() 
+                            timeReported:   Date.now() //this needs to be done on the device and sent over
                         }],     
                          
                     });
@@ -274,7 +274,8 @@ router.get("/summary", function(req, res) {
                  averageUV:      newActivity.avgUV,
                  activityType:   newActivity.type,
                  date:           newActivity.created,
-                 
+                 duration:       Math.round((((newActivity.measurement[newActivity.measurement.length - 1].timeReported-newActivity.created) % 86400000) % 3600000) / 60000) // minutes
+    
                 //temperture:  Number,
                 //humidity:    Number,
                 //measurement: [{

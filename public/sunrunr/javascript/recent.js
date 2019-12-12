@@ -2,7 +2,7 @@
 
 let map = null;
 
-function getRecentPotholes() {
+function getRecentData() {
    //console.log("recent button pressed");
   $.ajax({
     url: '/data/summary',
@@ -10,42 +10,60 @@ function getRecentPotholes() {
     headers: { 'x-auth': window.localStorage.getItem("authToken") },
     dataType: 'json'
   })
-    .done(displayMostRecentPothole)
+    .done(displayMostRecentData)
     .fail(recentPotholeError);
 
 }
 
-function displayMostRecentPothole(data, textSatus, jqXHR) {
+function displayMostRecentData(data, textSatus, jqXHR) {
   //$("#main").show();
   // If there's at least one pothole, draw the map
   let latitude = 32.2319;
-	let longitude = -110.9501;
-  let potholeReport = "No potholes have been reported in the last three days.";
-   if (data.potholes.length > 0) {
+  let longitude = -110.9501;
+  
+  let activityReport = "No activities have been reported this week.";
+   if (data.activities.length > 0) {
 
-    potholeReport = data.potholes.length +
+    activityReport = data.activities.length +
     " different webhooks detected at different locations.";
 
     // Start of the list displaying all data points.
-    potholeReport += "<ul><li>Most recent:</li>";
+    activityReport += "<ul><li>Most recent:</li>";
 
     //looping through all potholes and concatenating them to a list.
-     for (var i = data.potholes.length - 1; i >= 0; i--) {
-      let latitude = data.potholes[i].latitude;
-      let longitude = data.potholes[i].longitude;
-      let uvRay = data.potholes[i].uv;
-      let hits = data.potholes[i].totalHits;
-      let firstRep = data.potholes[i].firstReported;
-      let lastRep = data.potholes[i].lastReported;
-      let gpsSpeed = data.potholes[i].gpsSpeed;
+     for (var i = data.activities.length - 1; i >= 0; i--) {
+
+      let speed = data.activities[i].averageSpeed;
+      let uv = data.activities[i].averageUV;
+      let type = data.activities[i].activityType;
+      let firstRep = data.activities[i].date;
+      //let lastRep = data.potholes[i].lastReporte;
+      let cal = 333;
+      
+      let cardHTML = "<div class=\"card\"><div class=\"card-body\">"
+      cardHTML += "<h5 class=\"card-title\" id=\"type\">"+type+"</h5><h6 class=\"card-subtitle mb-2 text-muted\" id=\"duration\">";
+      cardHTML += firstRep+"</h6><p class=\"card-text\">Some quick example text.";
+      cardHTML += "</p><table class=\"table\"><tbody><tr><td>Calories:</td><td id=\"calories\">"+cal+"</td></tr><tr><td>Speed:";
+      cardHTML += " </td><td id=\"speed\">"+speed+"</td></tr><tr><td>UV:</td><td id=\"uv\">"+uv+"</td></tr></tbody></table><a href=\"#\"";
+      cardHTML += "class=\"card-link\">More Info</a></div></div>";
+  
 
 
-      potholeReport += "<li>Total Hits: "
-      +hits+", latitude: "+latitude+", longitude: "+longitude+", Speed: "+gpsSpeed+", UV Strength: "+uvRay+
-      ", First Reported: "+firstRep+", last Reported: "+lastRep+"</li>"
-      $("#speed").html(gpsSpeed);
+      $("#test1").append(cardHTML);
+
+
+      /*
+      activityReport += "<li>Activity: "
+      +type+", Calories:, Speed: "+speed+", UV Strength: "+uv+
+      ", First Reported: "+firstRep+", last Reported: </li>"
+      $("#test1").append(cardHTML);
+      $("#type").html(type);
+      $("#uv").html(uv);
+      $("#speed").html(speed);
+      $("#calories").html("400");
+      $("#duration").text(firstRep);*/
      }
-     potholeReport+= "</ul>" //close list before displaying.
+     activityReport+= "</ul>" //close list before displaying.
 
   }
   /*
@@ -95,7 +113,7 @@ function initRecent() {
     // Allow the user to refresh by clicking a button.
     //$("#refreshRecent").click(getRecentPotholes);
     //$("#testButton").click(getRecentPotholes);
-    getRecentPotholes();
+    getRecentData();
 }
 
 
