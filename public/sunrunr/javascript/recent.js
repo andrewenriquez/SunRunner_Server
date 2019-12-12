@@ -5,7 +5,7 @@ let map = null;
 function getRecentPotholes() {
    //console.log("recent button pressed");
   $.ajax({
-    url: '/data/recent/30',
+    url: '/data/summary',
     type: 'GET',
     headers: { 'x-auth': window.localStorage.getItem("authToken") },
     dataType: 'json'
@@ -16,7 +16,7 @@ function getRecentPotholes() {
 }
 
 function displayMostRecentPothole(data, textSatus, jqXHR) {
-  $("#main").show();
+  //$("#main").show();
   // If there's at least one pothole, draw the map
   let latitude = 32.2319;
 	let longitude = -110.9501;
@@ -93,9 +93,9 @@ function recentPotholeError(jqXHR, textStatus, errorThrown) {
 // getRecentPotholes() to display the recent potholes
 function initRecent() {
     // Allow the user to refresh by clicking a button.
-    $("#refreshRecent").click(getRecentPotholes);
-    $("#testButton").click(getRecentPotholes);
-    //getRecentPotholes();
+    //$("#refreshRecent").click(getRecentPotholes);
+    //$("#testButton").click(getRecentPotholes);
+    getRecentPotholes();
 }
 
 

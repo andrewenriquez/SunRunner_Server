@@ -2,6 +2,8 @@ var db = require("../db");
 
 var activitySchema = new db.Schema({
     type:          String,
+    avgSpeed:       Number,
+    avgUV:          Number,
     deviceId:       String,
     created:   { type: Date, default: Date.now },
     measurement: [{
@@ -18,4 +20,3 @@ var activitySchema = new db.Schema({
 var Activity = db.model("Activity", activitySchema);
 
 module.exports = Activity;
-

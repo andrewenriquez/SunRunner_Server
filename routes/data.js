@@ -53,6 +53,7 @@ function makeWeatherRequest(err, ){
 // POST: Adds reported measurement and new activity to the database
 // Authentication: APIKEY. The device reporting must have a valid APIKEY
 router.post("/hit", function(req, res) {
+
     let responseJson = {
         success : false,
         message : "",
@@ -112,10 +113,27 @@ router.post("/hit", function(req, res) {
                     responseJson.message = "Error updatting data in db." + err;
                     return res.status(401).send(JSON.stringify(responseJson));
                 }
+                
                 // if the activity is not null and the index in the post request is greater than the last element in
                 // the activity measurements array, add the post request object to said array.
                 if (activity != null && req.body.index > activity.measurement[activity.measurement.length - 1].index) {
+                    //let numActivities = 0;
 
+                        let sumSpeed = parseFloat(req.body.speed);
+                        let sumUV = parseFloat(req.body.uv);
+                        let numMeasurements = 1;
+
+                        //calculating averages and adding them to activity database.
+                        for (let measurements of activity.measurement) {
+
+                            sumSpeed += measurements.speed;
+                            sumUV += measurements.uv;
+                            numMeasurements++;
+                        
+                        }
+                        // Add measurement data to the respone's measurements array
+                        activity.avgUV = sumUV / numMeasurements;
+                        activity.avgSpeed = sumSpeed / numMeasurements;
                     activity.measurement.push(
                         {
                             loc:            [req.body.longitude, req.body.latitude],
@@ -127,8 +145,18 @@ router.post("/hit", function(req, res) {
                         
 
                     );
-
-                    responseJson.message = "Activity updated. New activity recorded. Total measurements for activity "+
+                    /**This just does determines what the activity is based on the speed. We should change this. */
+                    if (activity.avgSpeed >= 10.0) {
+                        activity.type = "Biking";
+                    }
+                    else if (activity.avgSpeed < 10.0 && activity.avgSpeed >= 5.0) {
+                        activity.type = "Running";
+                    }
+                    else {
+                        activity.type = "Walking";
+                    }
+                    /**Just a simple response to make sure everything is working. Greate for testing with JSON POSTer Utility. */
+                    responseJson.message = "Activity ["+activity.type+"]. New activity recorded. Total measurements for activity "+
                     activity._id+" is "+activity.measurement.length;
                    
                 }
@@ -139,6 +167,8 @@ router.post("/hit", function(req, res) {
                         //type:          String,
                         //temperture:  Number,
                         //humidity:    Number,
+                        avgSpeed:       req.body.speed,
+                        avgUV:          req.body.uv,
                         deviceId:       req.body.deviceId,
                         created:        Date.now(),
                         measurement: [{
@@ -150,11 +180,22 @@ router.post("/hit", function(req, res) {
                         }],     
                          
                     });
+/**This just does determines what the activity is based on the speed. We should change this. */
+                    if (activity.avgSpeed >= 10.0) {
+                        activity.type = "Biking";
+                    }
+                    else if (activity.avgSpeed < 10.0 && activity.avgSpeed >= 5.0) {
+                        activity.type = "Running";
+                    }
+                    else {
+                        activity.type = "Walking";
+                    }
+                    
                     responseJson.message = "New activity recorded. Activity ID is "+
                     activity._id;   
 
                 }
-                //This should take care of measurements that might be duplicates. They won't be saved.
+                //This should take care of measurements that might be duplicates or lagging. They won't be saved.
                 else {
                     responseJson.message = "No activities changed."; 
                     responseJson.success = true;
@@ -177,8 +218,8 @@ router.post("/hit", function(req, res) {
 
 // GET: Returns all measurements first reported in the previous specified number of days
 // Authentication: Token. A user must be signed in to access this endpoint
-router.get("/summary/:days", function(req, res) {
-    let days = req.params.days;
+router.get("/summary", function(req, res) {
+    let days = 7;
     
     let responseJson = {
         success: true,
@@ -196,7 +237,6 @@ router.get("/summary/:days", function(req, res) {
         }
     }
     
-    
     // Check to ensure the days is between 1 and 30 (inclsuive), return error if not
     if (days < 1 || days > 30) {
         responseJson.success = false;
@@ -207,12 +247,12 @@ router.get("/summary/:days", function(req, res) {
 
     // Find all activities reported in the spcified number of days
     let activityQuery = Activity.find({
-        "timeStop": 
+        "created": 
         {
             $gte: new Date((new Date().getTime() - (days * 24 * 60 * 60 * 1000)))
         },
 
-    }).sort({ "timeStop": -1 });    
+    }).sort({ "created": -1 });    
     
     activityQuery.exec({}, function(err, recentActivities) {
         if (err) {
@@ -222,28 +262,44 @@ router.get("/summary/:days", function(req, res) {
         }
         
         //Create list of activity data     
-        let numActivities = 0;           
+        let numActivities = 0;
+         
+             
         for (let newActivity of recentActivities) { 
 
-            // Add measurement data to the respone's measurements array
-            numActivities++; 
-            responseJson.activities.push({
-                deviceId:       newActivity.deviceId,
+            responseJson.activities.push(
+                {
+                 deviceId:       newActivity.deviceId,
+                 averageSpeed:   newActivity.avgSpeed,
+                 averageUV:      newActivity.avgUV,
+                 activityType:   newActivity.type,
+                 
                 //temperture:  Number,
                 //humidity:    Number,
-                measurement: [{
-                    loc:            [newActivity.longitude, newActivity.latitude],
-                    uv:             newActivity.uv,
-                    speed:         newActivity.speed,
-                    timeReported:  newActivity.timeReported, 
-                }],                    
+                //measurement: [{
+                //    loc:            [newActivity.longitude, newActivity.latitude],
+                //    uv:             newActivity.uv,
+                //    speed:         newActivity.speed,
+                //    timeReported:  newActivity.timeReported, 
+                //}]            
               
-            });
+            }
+            );
         }
         responseJson.message = "In the past " + days + " days, you've done " + numActivities + " activities!";
         return res.status(200).send(JSON.stringify(responseJson));
     
     });
+});
+
+
+router.get("/all", function(req, res) {
+
+});
+
+
+router.get("/one/date/activity", function(req, res) {
+
 });
 
 
