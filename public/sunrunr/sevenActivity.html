@@ -44,10 +44,10 @@
 
       <div class="col-lg-4 col-md-6 col-12">
         <div class="card">
-          <div class="card-header text-light bg-info">
+          <div class="card-header text-light bg-info" id="today">
             TODAY
           </div>
-          <div class="card-body" id="test1">
+          <div class="card-body" id="todayCards">
                 
           <!-- Start of summary card--> <!--End of summary card-->
 
@@ -57,35 +57,10 @@
 
       <div class="col-lg-4 col-md-6 col-12">
         <div class="card">
-          <div class="card-header text-light bg-info">
+          <div class="card-header text-light bg-info" id="yesterday">
             YESTERDAY
           </div>
-          <div class="card-body">
-              <div class="card">
-                  <div class="card-body">
-                    <h5 class="card-title">Running</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">11:30 am</h6>
-                    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                    <table class="table">
-                      <tbody>
-                        <tr>
-                          <td>Calories:</td>
-                          <td>420</td>
-                        </tr>
-                        <tr>
-                          <td>Speed:</td>
-                          <td id="speed">12.4</td>
-                        </tr>
-                        <tr>
-                          <td>UV:</td>
-                          <td>6.7</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                    <a href="#" class="card-link">More Info</a>
-                    <a href="#" class="card-link">Another link</a>
-                  </div>
-                </div>
+          <div class="card-body" id="yesterdayCards">
             <p class="card-text" id="main">High: 70&deg; Low: 66&deg;<p>
             <p class="card-text">Rain and maybe a thundestorm<p>
           </div>
@@ -94,7 +69,7 @@
 
       <div class="col-7 col-md-4">
         <div class="card">
-            <div class="card-header text-light bg-info">
+            <div class="card-header text-light bg-info" id="twoDaysAgo">
             FRIDAY
             </div>
             <div class="card-body">
@@ -107,7 +82,7 @@
 
       <div class="col-7 col-md-4">
         <div class="card">
-          <div class="card-header text-light bg-info">
+          <div class="card-header text-light bg-info" id="threeDaysAgo">
             THURSDAY
           </div>
           <div class="card-body">
@@ -119,7 +94,7 @@
       
       <div class="col-7 col-md-4">
             <div class="card">
-              <div class="card-header text-light bg-info">
+              <div class="card-header text-light bg-info" id="fourDaysAgo">
                 WEDNESDAY
               </div>
               <div class="card-body">
@@ -131,7 +106,7 @@
         
       <div class="col-7 col-md-4">
         <div class="card">
-          <div class="card-header text-light bg-info">
+          <div class="card-header text-light bg-info" id="fiveDaysAgo">
             TUESDAY
           </div>
           <div class="card-body">
@@ -142,7 +117,7 @@
       </div>
       <div class="col-7 col-md-4">
         <div class="card">
-          <div class="card-header text-light bg-info">
+          <div class="card-header text-light bg-info" id="sixDaysAgo">
             MONDAY
           </div>
           <div class="card-body">

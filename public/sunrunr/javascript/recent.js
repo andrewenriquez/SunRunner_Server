@@ -20,6 +20,9 @@ function displayMostRecentData(data, textSatus, jqXHR) {
   // If there's at least one pothole, draw the map
   let latitude = 32.2319;
   let longitude = -110.9501;
+
+
+
   
   let activityReport = "No activities have been reported this week.";
    if (data.activities.length > 0) {
@@ -48,8 +51,8 @@ function displayMostRecentData(data, textSatus, jqXHR) {
       cardHTML += "class=\"card-link\">More Info</a></div></div>";
   
 
-
-      $("#test1").append(cardHTML);
+      
+      $("#todayCards").append(cardHTML);
 
 
       /*
@@ -110,10 +113,56 @@ function recentPotholeError(jqXHR, textStatus, errorThrown) {
 // Executes once the google map api is loaded, and then sets up the handler's and calls
 // getRecentPotholes() to display the recent potholes
 function initRecent() {
-    // Allow the user to refresh by clicking a button.
-    //$("#refreshRecent").click(getRecentPotholes);
-    //$("#testButton").click(getRecentPotholes);
-    getRecentData();
+  
+  let todayDate = new Date();
+  let todayWeek = todayDate.getDay();
+
+  switch(todayWeek) {
+    case 0:                      //sunday
+      //change page
+      $("#today").html("Sunday (today)");
+      $("#yesterday").html("Saturday (Yesterday)");
+      $("#twoDaysAgo").html("Friday");
+      $("#threeDaysAgo").html("Thursday");
+      $("#fourDaysAgo").html("Wednesday");
+      $("#fiveDaysAgo").html("Tuesday");
+      $("#sixDaysAgo").html("Monday");
+      break;
+
+    case 1:
+
+      break;
+
+    case 2:
+      
+      break;
+
+    case 3:
+      
+      break;
+
+    case 4:
+      $("#today").html("THURSDAY (Today)");
+      $("#yesterday").html("WEDNESDAY (Yesterday)");
+      $("#twoDaysAgo").html("TUESDAY");
+      $("#threeDaysAgo").html("MONDAY");
+      $("#fourDaysAgo").html("SUNDAY");
+      $("#fiveDaysAgo").html("SATURDAY");
+      $("#sixDaysAgo").html("FRIDAY");
+
+      break;
+      
+    case 5:
+      
+      break;
+
+    case 6:
+
+      break;
+  }
+
+  getRecentData();
+
 }
 
 
