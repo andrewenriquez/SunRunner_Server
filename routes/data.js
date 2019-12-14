@@ -274,7 +274,7 @@ router.get("/summary", function(req, res) {
                  averageUV:      newActivity.avgUV,
                  activityType:   newActivity.type,
                  date:           newActivity.created,
-                 duration:       Math.round((((newActivity.measurement[newActivity.measurement.length - 1].timeReported-newActivity.created) % 86400000) % 3600000) / 60000) // minutes
+                 duration:       newActivity.measurement.length * 15
     
                 //temperture:  Number,
                 //humidity:    Number,
@@ -284,9 +284,14 @@ router.get("/summary", function(req, res) {
                 //    speed:         newActivity.speed,
                 //    timeReported:  newActivity.timeReported, 
                 //}]            
-              
+                
+                
             }
+                
             );
+
+            numActivities++;
+
         }
         responseJson.message = "In the past " + days + " days, you've done " + numActivities + " activities!";
         return res.status(200).send(JSON.stringify(responseJson));

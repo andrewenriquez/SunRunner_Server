@@ -21,8 +21,6 @@ function displayMostRecentData(data, textSatus, jqXHR) {
   let latitude = 32.2319;
   let longitude = -110.9501;
 
-
-
   
   let activityReport = "No activities have been reported this week.";
    if (data.activities.length > 0) {
@@ -40,18 +38,56 @@ function displayMostRecentData(data, textSatus, jqXHR) {
       let uv = data.activities[i].averageUV;
       let type = data.activities[i].activityType;
       let firstRep = data.activities[i].date;
+      let duration = data.activities[i].duration / 60;
       //let lastRep = data.potholes[i].lastReporte;
       let cal = 333;
       
       let cardHTML = "<div class=\"card\"><div class=\"card-body\">"
       cardHTML += "<h5 class=\"card-title\" id=\"type\">"+type+"</h5><h6 class=\"card-subtitle mb-2 text-muted\" id=\"duration\">";
-      cardHTML += firstRep+"</h6><p class=\"card-text\">Some quick example text.";
+      cardHTML += duration+" min</h6><p class=\"card-text\">Some quick example text.";
       cardHTML += "</p><table class=\"table\"><tbody><tr><td>Calories:</td><td id=\"calories\">"+cal+"</td></tr><tr><td>Speed:";
       cardHTML += " </td><td id=\"speed\">"+speed+"</td></tr><tr><td>UV:</td><td id=\"uv\">"+uv+"</td></tr></tbody></table><a href=\"#\"";
       cardHTML += "class=\"card-link\">More Info</a></div></div>";
-  
-
       
+      let todayDate = new Date();
+      let firstRepDate = new Date(firstRep);
+      let todayWeek = todayDate.getDay();
+      let firstRepWeek = firstRepDate.getDay();
+      
+  switch(todayWeek ) {
+    case 0:                      //sunday
+      //change page
+
+
+      break;
+
+    case 1:
+      //change page
+
+      break;
+
+    case 2:
+     
+      break;
+
+    case 3:
+   
+      break;
+
+    case 4:
+
+
+      break;
+      
+    case 5:
+ 
+      break;
+
+    case 6:
+
+      break;
+  }
+
       $("#todayCards").append(cardHTML);
 
 
@@ -120,25 +156,45 @@ function initRecent() {
   switch(todayWeek) {
     case 0:                      //sunday
       //change page
-      $("#today").html("Sunday (today)");
-      $("#yesterday").html("Saturday (Yesterday)");
-      $("#twoDaysAgo").html("Friday");
-      $("#threeDaysAgo").html("Thursday");
-      $("#fourDaysAgo").html("Wednesday");
-      $("#fiveDaysAgo").html("Tuesday");
-      $("#sixDaysAgo").html("Monday");
+      $("#today").html("SUNDAY (Today)");
+      $("#yesterday").html("SATURDAY (Yesterday)");
+      $("#twoDaysAgo").html("FRIDAY");
+      $("#threeDaysAgo").html("THURSDAY");
+      $("#fourDaysAgo").html("WEDNESDAY");
+      $("#fiveDaysAgo").html("TUESDAY");
+      $("#sixDaysAgo").html("MONDAY");
       break;
 
     case 1:
+      //change page
+      $("#today").html("MONDAY (Today)");
+      $("#yesterday").html("FRIDAY (Yesterday)");
+      $("#twoDaysAgo").html("THURSDAY");
+      $("#threeDaysAgo").html("WEDNESDAY");
+      $("#fourDaysAgo").html("TUESDAY");
+      $("#fiveDaysAgo").html("MONDAY");
+      $("#sixDaysAgo").html("SUNDAY");
 
       break;
 
     case 2:
-      
+      $("#today").html("TUESDAY (Today)");
+      $("#yesterday").html("MONDAY (Yesterday)");
+      $("#twoDaysAgo").html("SUNDAY");
+      $("#threeDaysAgo").html("SATURDAY");
+      $("#fourDaysAgo").html("FRIDAY");
+      $("#fiveDaysAgo").html("THURSDAY");
+      $("#sixDaysAgo").html("WEDNESDAY");      
       break;
 
     case 3:
-      
+      $("#today").html("WEDNESDAY (Today)");
+      $("#yesterday").html("TUESDAY (Yesterday)");
+      $("#twoDaysAgo").html("MONDAY");
+      $("#threeDaysAgo").html("SUNDAY");
+      $("#fourDaysAgo").html("SATURDAY");
+      $("#fiveDaysAgo").html("FRIDAY");
+      $("#sixDaysAgo").html("THURSDAY");     
       break;
 
     case 4:
@@ -153,11 +209,23 @@ function initRecent() {
       break;
       
     case 5:
-      
+      $("#today").html("FRIDAY (Today)");
+      $("#yesterday").html("THURSDAY (Yesterday)");
+      $("#twoDaysAgo").html("WEDNESDAY");
+      $("#threeDaysAgo").html("TUESDAY");
+      $("#fourDaysAgo").html("MONDAY");
+      $("#fiveDaysAgo").html("SUNDAY");
+      $("#sixDaysAgo").html("SATURDAY");    
       break;
 
     case 6:
-
+      $("#today").html("SATURDAY (Today)");
+      $("#yesterday").html("FRIDAY (Yesterday)");
+      $("#twoDaysAgo").html("THURSDAY");
+      $("#threeDaysAgo").html("WEDNESDAY");
+      $("#fourDaysAgo").html("TUESDAY");
+      $("#fiveDaysAgo").html("MONDAY");
+      $("#sixDaysAgo").html("SUNDAY");
       break;
   }
 
