@@ -27,28 +27,38 @@ function authenticateAuthToken(req) {
         return null;
     }
 }
-/*
-function makeWeatherRequest(err, ){
+
+function requestWeather(location){
     //Get weather information
-    var zip = 90210;
+    //var APIKEY = fs.readFileSync(path.join(__dirname, '../..', 'weatherAPI')).toString();
+	var APIKEY = f5b6d09e13c1b21fdff87955482ee698; 
     request({
       method: "GET",
       uri: "http://api.openweathermap.org/data/2.5/weather",
       qs: {
-         zip: zip,
+        lon= location[0],
+        lat=location[1],        
          units: "imperial",
-         appid: "APIKEY"
+         appid: APIKEY
       }
     }, function(error, response, body) {
+        if(error){
+            var weather = {
+                temp: 0, 
+                humidity: 0
+            };
+            return (weather);
+        }
+
         var data = JSON.parse(body);                
-        var locals = {
-         data: data, 
-         zip: zip
+        var weather = {
+            temp: data.main.temp, 
+            humidity: data.main.humidity
         };
-        res.render("weather", locals);
+        return (weather);
     });
 }
-*/
+
 
 // POST: Adds reported measurement and new activity to the database
 // Authentication: APIKEY. The device reporting must have a valid APIKEY
@@ -148,16 +158,30 @@ router.post("/hit", function(req, res) {
                     /**This just does determines what the activity is based on the speed. We should change this. */
                     if (activity.avgSpeed >= 10.0) {
                         activity.type = "Biking";
+                        let MET = 9.5;   
+                        let weight = 70;   //Avg weight in kg
+                        let durationMin =  activity.duration/60;
+                        activity.calsBurned =  (durationMin*MET*3.5*weight)/200;
                     }
                     else if (activity.avgSpeed < 10.0 && activity.avgSpeed >= 5.0) {
                         activity.type = "Running";
+                        let MET = 9.8;
+                        let weight = 70;   //Avg weight in kg
+                        let durationMin =  activity.duration/60;
+                        activity.calsBurned =  (durationMin*MET*3.5*weight)/200;
                     }
                     else {
                         activity.type = "Walking";
+                        let MET = 3.8;
+                        let weight = 70;   //Avg weight in kg
+                        let durationMin =  activity.duration/60;
+                        activity.calsBurned =  (durationMin*MET*3.5*weight)/200;
                     }
                     /**Just a simple response to make sure everything is working. Greate for testing with JSON POSTer Utility. */
                     responseJson.message = "Activity ["+activity.type+"]. New activity recorded. Total measurements for activity "+
                     activity._id+" is "+activity.measurement.length;
+                    
+            
                    
                 }
                 //if the post req has an index value of 0, then we should consider this a new activity and record the start time
@@ -183,13 +207,31 @@ router.post("/hit", function(req, res) {
 /**This just does determines what the activity is based on the speed. We should change this. */
                     if (activity.avgSpeed >= 10.0) {
                         activity.type = "Biking";
+                        let MET = 9.5;   
+                        let weight = 70;   //Avg weight in kg
+                        let durationMin =  activity.duration/60;
+                        activity.calsBurned =  (durationMin*MET*3.5*weight)/200;
                     }
                     else if (activity.avgSpeed < 10.0 && activity.avgSpeed >= 5.0) {
                         activity.type = "Running";
+                        let MET = 9.8;
+                        let weight = 70;   //Avg weight in kg
+                        let durationMin =  activity.duration/60;
+                        activity.calsBurned =  (durationMin*MET*3.5*weight)/200;
                     }
                     else {
                         activity.type = "Walking";
+                        let MET = 3.8;
+                        let weight = 70;   //Avg weight in kg
+                        let durationMin =  activity.duration/60;
+                        activity.calsBurned =  (durationMin*MET*3.5*weight)/200;
                     }
+
+                    //Get current weather for location and save temp & humidity
+                    let temp = requestWeather(activity.measurement.loc).temp;
+                    let humidity = requestWeather(activity.measurement.loc).humidity;
+                    activity.temperture = temp;
+                    activity.humidity = humidity;
                     
                     responseJson.message = "New activity recorded. Activity ID is "+
                     activity._id;   
@@ -356,10 +398,10 @@ router.get("/all", function(req, res) {
                     return res.status(200).send(JSON.stringify(responseJson));
                 }
                 
-                //Create list of activity data     
+                    
                
                     
-                        
+                //Create list of activity data         
                 for (let newActivity of recentActivities) { 
 
                     responseJson.activities.push(
@@ -404,6 +446,10 @@ router.get("/all", function(req, res) {
 
 router.get("/one/date/activity", function(req, res) {
 
+});
+
+router.post("/changeActivity", function(req, res) {
+    
 });
 
 

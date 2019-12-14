@@ -4,6 +4,7 @@ var activitySchema = new db.Schema({
     type:          String,
     avgSpeed:       Number,
     avgUV:          Number,
+    calsBurned:     Number,
     deviceId:       String,
     created:   { type: Date, default: Date.now },
     measurement: [{
