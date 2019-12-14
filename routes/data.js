@@ -301,6 +301,100 @@ router.get("/summary", function(req, res) {
 
 
 router.get("/all", function(req, res) {
+    let days = 30;      //MIGHT WANT TO REMOVE OR CHANGE
+    let responseJson = {
+        success: true,
+        message: "",
+        activities: [],
+    };
+    
+    //Authenticate User
+    if (authenticateRecentEndpoint) {
+        decodedToken = authenticateAuthToken(req);
+        if (!decodedToken) {
+            responseJson.success = false;
+            responseJson.message = "Authentication failed";
+            return res.status(401).json(responseJson);
+        }
+    }
+
+    //Get email of current user     
+    let userEmail = decodedToken.headers.email;
+    // Find all devices for user
+    let deviceQuery = Device.find({
+        "userEmail": 
+        {
+            $eq: userEmail
+        },
+
+    }).sort({ "lastContact": -1 });
+
+    deviceQuery.exec({}, function(err, recentDevices) {
+        if (err) {
+            responseJson.success = false;
+            responseJson.message = "Error accessing devices db.";
+            return res.status(200).send(JSON.stringify(responseJson));
+        }
+                
+        //Loop through devices of user to find all user activities     
+        for (let nextDevice of recentDevices) { 
+
+            // Find all user activities
+            let activityQuery = Activity.find({ 
+                $and:[
+                    { "deviceId": { $eq: nextDevice.deviceId } }, 
+                    { "created": { $gte: new Date((new Date().getTime() - (days * 24 * 60 * 60 * 1000))) } }
+            ]}).sort({ "created": -1 });    
+            
+            activityQuery.exec({}, function(err, recentActivities) {
+                if (err) {
+                    responseJson.success = false;
+                    responseJson.message = "Error accessing activity db.";
+                    return res.status(200).send(JSON.stringify(responseJson));
+                }
+                
+                //Create list of activity data     
+                let numActivities = 0;
+                    
+                        
+                for (let newActivity of recentActivities) { 
+
+                    responseJson.activities.push(
+                        {
+                            deviceId:       newActivity.deviceId,
+                            averageSpeed:   newActivity.avgSpeed,
+                            averageUV:      newActivity.avgUV,
+                            activityType:   newActivity.type,
+                            date:           newActivity.created,
+                            duration:       newActivity.measurement.length * 15
+            
+                        //temperture:  Number,
+                        //humidity:    Number,
+                        //measurement: [{
+                        //    loc:            [newActivity.longitude, newActivity.latitude],
+                        //    uv:             newActivity.uv,
+                        //    speed:         newActivity.speed,
+                        //    timeReported:  newActivity.timeReported, 
+                        //}]            
+                        
+                        
+                    }
+                        
+                    );
+
+                    numActivities++;
+                }
+              
+            
+            });
+
+        }
+        responseJson.message = "In the past " + days + " days, you've done " + numActivities + " activities!";
+        return res.status(200).send(JSON.stringify(responseJson));
+    
+    });    
+
+           
 
 });
 
