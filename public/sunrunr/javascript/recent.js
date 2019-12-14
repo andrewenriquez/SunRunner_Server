@@ -40,7 +40,7 @@ function displayMostRecentData(data, textSatus, jqXHR) {
       let firstRep = data.activities[i].date;
       let duration = data.activities[i].duration / 60;
       //let lastRep = data.potholes[i].lastReporte;
-      let cal = 333;
+      let cal = data.activities[i].calsBurned;
       
       let cardHTML = "<div class=\"card\"><div class=\"card-body\">"
       cardHTML += "<h5 class=\"card-title\" id=\"type\">"+type+"</h5><h6 class=\"card-subtitle mb-2 text-muted\" id=\"duration\">";
