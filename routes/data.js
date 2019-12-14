@@ -320,7 +320,9 @@ router.get("/all", function(req, res) {
     }
 
     //Get email of current user     
-    let userEmail = decodedToken.headers.email;
+    let userEmail = decodedToken.email;
+
+    let numActivities = 0;
     // Find all devices for user
     let deviceQuery = Device.find({
         "userEmail": 
@@ -355,7 +357,7 @@ router.get("/all", function(req, res) {
                 }
                 
                 //Create list of activity data     
-                let numActivities = 0;
+               
                     
                         
                 for (let newActivity of recentActivities) { 
@@ -385,13 +387,13 @@ router.get("/all", function(req, res) {
 
                     numActivities++;
                 }
-              
+                responseJson.message = "In the past " + days + " days, you've done " + numActivities + " activities!";
+                return res.status(200).send(JSON.stringify(responseJson));
             
             });
-
+           
         }
-        responseJson.message = "In the past " + days + " days, you've done " + numActivities + " activities!";
-        return res.status(200).send(JSON.stringify(responseJson));
+        
     
     });    
 
