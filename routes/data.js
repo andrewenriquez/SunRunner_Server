@@ -180,7 +180,7 @@ router.post("/hit", function(req, res) {
                         }],     
                          
                     });
-/**This just does determines what the activity is based on the speed. We should change this. */
+                /**This just does determines what the activity is based on the speed. We should change this. */
                     if (activity.avgSpeed >= 10.0) {
                         activity.type = "Biking";
                     }
@@ -267,6 +267,11 @@ router.get("/summary", function(req, res) {
          
              
         for (let newActivity of recentActivities) { 
+
+            //for (measurements of newActivity.measurement) {
+            //    speedArray.push(measurements.speed);
+                //same uv
+            //}
 
             responseJson.activities.push(
                 {
