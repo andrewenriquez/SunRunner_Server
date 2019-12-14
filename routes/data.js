@@ -28,7 +28,7 @@ function authenticateAuthToken(req) {
     }
 }
 
-function requestWeather(location){
+/*function requestWeather(location){
     //Get weather information
     //var APIKEY = fs.readFileSync(path.join(__dirname, '../..', 'weatherAPI')).toString();
 	var APIKEY = f5b6d09e13c1b21fdff87955482ee698; 
@@ -36,8 +36,8 @@ function requestWeather(location){
       method: "GET",
       uri: "http://api.openweathermap.org/data/2.5/weather",
       qs: {
-        lon= location[0],
-        lat=location[1],        
+        //lon= location[0],
+        //lat=location[1],        
          units: "imperial",
          appid: APIKEY
       }
@@ -57,7 +57,7 @@ function requestWeather(location){
         };
         return (weather);
     });
-}
+}*/
 
 
 // POST: Adds reported measurement and new activity to the database
@@ -155,6 +155,8 @@ router.post("/hit", function(req, res) {
                         
 
                     );
+
+                    activity.duration = activity.measurement.length * 15;
                     /**This just does determines what the activity is based on the speed. We should change this. */
                     if (activity.avgSpeed >= 10.0) {
                         activity.type = "Biking";
@@ -204,6 +206,7 @@ router.post("/hit", function(req, res) {
                         }],     
                          
                     });
+                    activity.duration = activity.measurement.length * 15;
                 /**This just does determines what the activity is based on the speed. We should change this. */
                     if (activity.avgSpeed >= 10.0) {
                         activity.type = "Biking";
@@ -228,10 +231,10 @@ router.post("/hit", function(req, res) {
                     }
 
                     //Get current weather for location and save temp & humidity
-                    let temp = requestWeather(activity.measurement.loc).temp;
-                    let humidity = requestWeather(activity.measurement.loc).humidity;
-                    activity.temperture = temp;
-                    activity.humidity = humidity;
+                    //let temp = requestWeather(activity.measurement.loc).temp;
+                    //let humidity = requestWeather(activity.measurement.loc).humidity;
+                    //activity.temperture = temp;
+                    //activity.humidity = humidity;
                     
                     responseJson.message = "New activity recorded. Activity ID is "+
                     activity._id;   
@@ -322,7 +325,8 @@ router.get("/summary", function(req, res) {
                  averageUV:      newActivity.avgUV,
                  activityType:   newActivity.type,
                  date:           newActivity.created,
-                 duration:       newActivity.measurement.length * 15
+                 duration:       newActivity.duration,
+                 calsBurned:      newActivity.calsBurned
     
                 //temperture:  Number,
                 //humidity:    Number,
@@ -416,7 +420,8 @@ router.get("/all", function(req, res) {
                             averageUV:      newActivity.avgUV,
                             activityType:   newActivity.type,
                             date:           newActivity.created,
-                            duration:       newActivity.measurement.length * 15
+                            duration:       newActivity.duration,
+                            calsBurned:      newActivity.calsBurned
             
                         //temperture:  Number,
                         //humidity:    Number,

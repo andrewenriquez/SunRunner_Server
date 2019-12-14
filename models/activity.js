@@ -6,6 +6,7 @@ var activitySchema = new db.Schema({
     avgUV:          Number,
     calsBurned:     Number,
     deviceId:       String,
+    duration:       Number,
     created:   { type: Date, default: Date.now },
     measurement: [{
         loc:            [{ type: [Number], index: '2dsphere'}],
