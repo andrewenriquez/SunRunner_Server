@@ -411,10 +411,12 @@ router.get("/all", function(req, res) {
                             averageUV:      newActivity.avgUV,
                             activityType:   newActivity.type,
                             date:           newActivity.created,
-                            duration:       newActivity.measurement.length * 15
+                            duration:       newActivity.measurement.length * 15,
+                            calsBurned:     newActivity.calsBurned,
+                            temperture:     newActivity.temperture,
+                            humidity:       newActivity.humidity,
             
-                        //temperture:  Number,
-                        //humidity:    Number,
+                        //
                         //measurement: [{
                         //    loc:            [newActivity.longitude, newActivity.latitude],
                         //    uv:             newActivity.uv,
@@ -444,7 +446,86 @@ router.get("/all", function(req, res) {
 });
 
 
-router.get("/one/date/activity", function(req, res) {
+router.get("/one/:time", function(req, res) {
+    let responseJson = {
+        success: true,
+        message: "",
+        activity: {
+            type:          String,
+            avgSpeed:       Number,
+            avgUV:          Number,
+            calsBurned:     Number,
+            deviceId:       String,
+            created:   { type: Date},
+            measurement: [{
+                loc:            [{ type: [Number], index: '2dsphere'}],
+                uv:             Number,
+                speed:          Number,
+                timeReported:   { type: Date}, 
+              
+            }],     
+            temperture:  Number,
+            humidity:    Number      
+
+        },
+    };
+    
+    //Authenticate User
+    if (authenticateRecentEndpoint) {
+        decodedToken = authenticateAuthToken(req);
+        if (!decodedToken) {
+            responseJson.success = false;
+            responseJson.message = "Authentication failed";
+            return res.status(401).json(responseJson);
+        }
+    }
+
+    // Find all activity with created time in query
+    let activityQuery = Activity.findOne({
+        "created": 
+        {
+            $eq: new Date(time)
+        },
+
+    });    
+    
+    activityQuery.exec({}, function(err, newActivity) {
+        if (err) {
+            responseJson.success = false;
+            responseJson.message = "Error accessing activity db.";
+            return res.status(200).send(JSON.stringify(responseJson));
+        }
+
+
+        //Create new activity data       
+        responseJson.activity.type = newActivity.type;
+        responseJson.activity.avgSpeed = newActivity.avgSpeed;
+        responseJson.activity.avgUV = newActivity.avgUV; 
+        responseJson.activity.calsBurned = newActivity.calsBurned;
+        responseJson.activity.deviceId = newActivity.deviceId;
+        responseJson.activity.created = newActivity.created;
+        responseJson.activity.temperture = newActivity.temperture;
+        responseJson.activity.humidity = newActivity.humidity;
+
+        //Create list of measurements for activity
+        for (let newMeasurement of newActivity.measurement) { 
+
+            responseJson.activity.measurement.push(
+                {                    
+                
+                    loc:            [newMeasurement.longitude, newMeasurement.latitude],
+                    uv:             newMeasurement.uv,
+                    speed:         newMeasurement.speed,
+                    timeReported:  newMeasurement.timeReported,                      
+                               
+            }
+                
+            );
+            
+        }
+        responseJson.message = "Detailed Activity Data Returned Sucessfully";
+        return res.status(200).send(JSON.stringify(responseJson));
+    });
 
 });
 
