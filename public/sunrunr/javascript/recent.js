@@ -54,41 +54,41 @@ function displayMostRecentData(data, textSatus, jqXHR) {
       let todayWeek = todayDate.getDay();
       let firstRepWeek = firstRepDate.getDay();
       
-  switch(todayWeek ) {
+  switch(todayWeek - firstRepWeek) {
     case 0:                      //sunday
       //change page
-
+      $("#todayCards").append(cardHTML);
 
       break;
 
     case 1:
       //change page
-
+      $("#yesterdayCards").append(cardHTML);
       break;
 
     case 2:
-     
+      $("#twoDaysAgoCards").append(cardHTML);     
       break;
 
     case 3:
-   
+      $("#threeDaysAgoCards").append(cardHTML);   
       break;
 
     case 4:
-
+      $("#fourDaysAgoCards").append(cardHTML);
 
       break;
       
     case 5:
- 
+      $("#fiveDaysAgoCards").append(cardHTML); 
       break;
 
     case 6:
-
+      $("#sixDaysAgoCards").append(cardHTML);
       break;
   }
 
-      $("#todayCards").append(cardHTML);
+      //$("#todayCards").append(cardHTML);
 
 
       /*

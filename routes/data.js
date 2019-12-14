@@ -237,6 +237,7 @@ router.get("/summary", function(req, res) {
         }
     }
     
+    
     // Check to ensure the days is between 1 and 30 (inclsuive), return error if not
     if (days < 1 || days > 7) {
         responseJson.success = false;
