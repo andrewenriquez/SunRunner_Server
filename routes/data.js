@@ -536,8 +536,89 @@ router.get("/one/:time", function(req, res) {
 
 });
 
+//This allows the user to change the activity type 
 router.post("/changeActivity", function(req, res) {
+
+    let responseJson = {
+        success : false,
+        message : "",
+    };
+
+    // Ensure the POST data include required properties                                               
+    if( !req.body.hasOwnProperty("deviceId") ) {
+        responseJson.message = "Request missing deviceId parameter.";
+        return res.status(201).send(JSON.stringify(responseJson));
+    }
     
+    if( !req.body.hasOwnProperty("apikey") ) {
+        responseJson.message = "Request missing apikey parameter.";
+        return res.status(201).send(JSON.stringify(responseJson));
+    }
+    
+    if( !req.body.hasOwnProperty("timeCreated") ) {
+        responseJson.message = "Request missing timeCreated parameter.";
+        return res.status(201).send(JSON.stringify(responseJson));
+    }
+    
+    if( !req.body.hasOwnProperty("newType") ) {
+        responseJson.message = "Request missing newType parameter.";
+        return res.status(201).send(JSON.stringify(responseJson));
+    }
+
+        
+    // Find the device in DB and VERIFY the apikey                                           
+    Device.findOne({ deviceId: req.body.deviceId }, function(err, device) {
+        if (device === null) {
+            responseJson.message = "Device ID " + req.body.deviceId + " not registered.";
+            return res.status(201).send(JSON.stringify(responseJson));
+        }
+        
+        if (device.apikey != req.body.apikey) {
+            responseJson.message = "Invalid apikey for device ID " + req.body.deviceId + ".";
+            return res.status(201).send(JSON.stringify(responseJson));
+        }
+            
+        //look for the most recent activity based off of time.
+            let findActivityQuery = Activity.findOne( {  created: new Date(req.body.timeCreated)  });                    
+
+
+            findActivityQuery.exec(function(err, activity) {
+                if (err) {
+                    responseJson.status = "ERROR";
+                    responseJson.message = "Error updatting data in db." + err;
+                    return res.status(401).send(JSON.stringify(responseJson));
+                }
+                
+                // Change activity's type and corresponding calories burned
+                activity.type = req.body.newType;
+                /**This just does determines what the activity is based on the speed. We should change this. */
+                let check = false;
+                if (activity.type = "Biking") {
+                    let MET = 9.5;   
+                    let weight = 70;   //Avg weight in kg
+                    let durationMin =  activity.duration/60;
+                    activity.calsBurned =  (durationMin*MET*3.5*weight)/200;
+                    check = true;
+                }
+                else if (activity.type = "Running") {                    
+                    let MET = 9.8;
+                    let weight = 70;   //Avg weight in kg
+                    let durationMin =  activity.duration/60;
+                    activity.calsBurned =  (durationMin*MET*3.5*weight)/200;
+                    check = true;
+                }
+                else if (activity.type = "Walking") {
+                    let MET = 3.8;
+                    let weight = 70;   //Avg weight in kg
+                    let durationMin =  activity.duration/60;
+                    activity.calsBurned =  (durationMin*MET*3.5*weight)/200;
+                    check = true;
+                }               
+                responseJson.message = "Activity Type Changed Sucessfully";
+                return res.status(200).send(JSON.stringify(responseJson));
+                          
+        });                 
+    });
 });
 
 
