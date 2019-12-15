@@ -31,6 +31,9 @@ function displayMostRecentData(data, textSatus, jqXHR) {
     // Start of the list displaying all data points.
     activityReport += "<ul><li>Most recent:</li>";
 
+    $("#total_uv").html(data.totalUV);
+    $("#total_min").html((data.totalDuration / 60 )+" mins");
+    $("#total_cals").html(data.totalCals+" Cals");
     //looping through all potholes and concatenating them to a list.
      for (var i = data.activities.length - 1; i >= 0; i--) {
 

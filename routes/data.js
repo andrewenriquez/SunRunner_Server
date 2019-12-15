@@ -4,7 +4,8 @@ let fs = require('fs');
 let jwt = require("jwt-simple");
 let path = require("path");
 let Device = require("../models/device");
-let Activity = require("../models/activity"); 
+let Activity = require("../models/activity");
+let request = require('request'); 
 
 // Secret key for JWT
 let secret = "superSecret";
@@ -28,16 +29,53 @@ function authenticateAuthToken(req) {
     }
 }
 
-/*function requestWeather(location){
+ function requestWeather(location, activity){
     //Get weather information
     //var APIKEY = fs.readFileSync(path.join(__dirname, '../..', 'weatherAPI')).toString();
-	var APIKEY = f5b6d09e13c1b21fdff87955482ee698; 
-    request({
+    var APIKEY = "527303e31c944895fd262ec2c68a5c1d";
+    
+    let myData = {
+        url: "http://api.openweathermap.org/data/2.5/weather?lat="+location[1]+
+        "&lon="+location[0]+"&APPID="+APIKEY,
+        method: 'GET',
+    };
+
+    request(myData, function(err, res, body) {
+        if (err) {
+            console.log("error");
+        }
+
+        else if (body) {
+
+            let jsonData = JSON.parse(body);
+            console.log(jsonData);
+
+            activity.temperture = (jsonData.main.temp - 273.15) * 9/5 + 32; //kelving to faren
+            activity.humidity = jsonData.main.humidity;
+            //return myData;
+        }
+
+        activity.save(function(err) {
+            if (err) {
+            responseJson.status = "ERROR";
+            responseJson.message = "Error saving data in db." + err;
+            return res.status(201).send(JSON.stringify(responseJson));
+        }
+    });
+
+
+    });
+
+
+
+}
+
+    /*request({
       method: "GET",
       uri: "http://api.openweathermap.org/data/2.5/weather",
       qs: {
-        //lon= location[0],
-        //lat=location[1],        
+        lon: location.longitude,
+        lat: location.latitude,        
          units: "imperial",
          appid: APIKEY
       }
@@ -231,10 +269,8 @@ router.post("/hit", function(req, res) {
                     }
 
                     //Get current weather for location and save temp & humidity
-                    //let temp = requestWeather(activity.measurement.loc).temp;
-                    //let humidity = requestWeather(activity.measurement.loc).humidity;
-                    //activity.temperture = temp;
-                    //activity.humidity = humidity;
+                    requestWeather(activity.measurement[0].loc, activity);
+                  //requestWeather(activity.measurement[0].loc);
                     
                     responseJson.message = "New activity recorded. Activity ID is "+
                     activity._id;   
@@ -270,6 +306,10 @@ router.get("/summary", function(req, res) {
         success: true,
         message: "",
         activities: [],
+        numActivities: 0,
+        totalCals: 0,
+        totalUV: 0,
+        totalDuration: 0
     };
     
     //Authenticate User
@@ -308,8 +348,8 @@ router.get("/summary", function(req, res) {
         }
         
         //Create list of activity data     
-        let numActivities = 0;
-         
+
+         let numActivities = 0;
              
         for (let newActivity of recentActivities) { 
 
@@ -317,6 +357,9 @@ router.get("/summary", function(req, res) {
             //    speedArray.push(measurements.speed);
                 //same uv
             //}
+            responseJson.totalCals += newActivity.calsBurned;
+            responseJson.totalUV += newActivity.avgUV;
+            responseJson.totalDuration += newActivity.duration;
 
             responseJson.activities.push(
                 {
@@ -326,7 +369,9 @@ router.get("/summary", function(req, res) {
                  activityType:   newActivity.type,
                  date:           newActivity.created,
                  duration:       newActivity.duration,
-                 calsBurned:      newActivity.calsBurned
+                 calsBurned:      newActivity.calsBurned,
+                 temp:          newActivity.temperature,
+                 humid:         newActivity.humidity
     
                 //temperture:  Number,
                 //humidity:    Number,
@@ -345,6 +390,8 @@ router.get("/summary", function(req, res) {
             numActivities++;
 
         }
+
+        //responseJson.totalCals = totalDuration;
         responseJson.message = "In the past " + days + " days, you've done " + numActivities + " activities!";
         return res.status(200).send(JSON.stringify(responseJson));
     
