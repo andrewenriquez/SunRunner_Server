@@ -470,8 +470,7 @@ router.get("/all", function(req, res) {
                             duration:       newActivity.duration,
                             calsBurned:      newActivity.calsBurned
             
-                        //temperture:  Number,
-                        //humidity:    Number,
+                        //
                         //measurement: [{
                         //    loc:            [newActivity.longitude, newActivity.latitude],
                         //    uv:             newActivity.uv,
@@ -501,12 +500,172 @@ router.get("/all", function(req, res) {
 });
 
 
-router.get("/one/date/activity", function(req, res) {
+router.get("/one/:time", function(req, res) {
+    let responseJson = {
+        success: true,
+        message: "",
+        activity: {
+            type:          String,
+            avgSpeed:       Number,
+            avgUV:          Number,
+            calsBurned:     Number,
+            deviceId:       String,
+            created:   { type: Date},
+            measurement: [{
+                loc:            [{ type: [Number], index: '2dsphere'}],
+                uv:             Number,
+                speed:          Number,
+                timeReported:   { type: Date}, 
+              
+            }],     
+            temperture:  Number,
+            humidity:    Number      
+
+        },
+    };
+    
+    //Authenticate User
+    if (authenticateRecentEndpoint) {
+        decodedToken = authenticateAuthToken(req);
+        if (!decodedToken) {
+            responseJson.success = false;
+            responseJson.message = "Authentication failed";
+            return res.status(401).json(responseJson);
+        }
+    }
+
+    // Find all activity with created time in query
+    let activityQuery = Activity.findOne({
+        "created": 
+        {
+            $eq: new Date(time)
+        },
+
+    });    
+    
+    activityQuery.exec({}, function(err, newActivity) {
+        if (err) {
+            responseJson.success = false;
+            responseJson.message = "Error accessing activity db.";
+            return res.status(200).send(JSON.stringify(responseJson));
+        }
+
+
+        //Create new activity data       
+        responseJson.activity.type = newActivity.type;
+        responseJson.activity.avgSpeed = newActivity.avgSpeed;
+        responseJson.activity.avgUV = newActivity.avgUV; 
+        responseJson.activity.calsBurned = newActivity.calsBurned;
+        responseJson.activity.deviceId = newActivity.deviceId;
+        responseJson.activity.created = newActivity.created;
+        responseJson.activity.temperture = newActivity.temperture;
+        responseJson.activity.humidity = newActivity.humidity;
+
+        //Create list of measurements for activity
+        for (let newMeasurement of newActivity.measurement) { 
+
+            responseJson.activity.measurement.push(
+                {                    
+                
+                    loc:            [newMeasurement.longitude, newMeasurement.latitude],
+                    uv:             newMeasurement.uv,
+                    speed:         newMeasurement.speed,
+                    timeReported:  newMeasurement.timeReported,                      
+                               
+            }
+                
+            );
+            
+        }
+        responseJson.message = "Detailed Activity Data Returned Sucessfully";
+        return res.status(200).send(JSON.stringify(responseJson));
+    });
 
 });
 
+//This allows the user to change the activity type 
 router.post("/changeActivity", function(req, res) {
+
+    let responseJson = {
+        success : false,
+        message : "",
+    };
+
+    // Ensure the POST data include required properties                                               
+    if( !req.body.hasOwnProperty("deviceId") ) {
+        responseJson.message = "Request missing deviceId parameter.";
+        return res.status(201).send(JSON.stringify(responseJson));
+    }
     
+    if( !req.body.hasOwnProperty("apikey") ) {
+        responseJson.message = "Request missing apikey parameter.";
+        return res.status(201).send(JSON.stringify(responseJson));
+    }
+    
+    if( !req.body.hasOwnProperty("timeCreated") ) {
+        responseJson.message = "Request missing timeCreated parameter.";
+        return res.status(201).send(JSON.stringify(responseJson));
+    }
+    
+    if( !req.body.hasOwnProperty("newType") ) {
+        responseJson.message = "Request missing newType parameter.";
+        return res.status(201).send(JSON.stringify(responseJson));
+    }
+
+        
+    // Find the device in DB and VERIFY the apikey                                           
+    Device.findOne({ deviceId: req.body.deviceId }, function(err, device) {
+        if (device === null) {
+            responseJson.message = "Device ID " + req.body.deviceId + " not registered.";
+            return res.status(201).send(JSON.stringify(responseJson));
+        }
+        
+        if (device.apikey != req.body.apikey) {
+            responseJson.message = "Invalid apikey for device ID " + req.body.deviceId + ".";
+            return res.status(201).send(JSON.stringify(responseJson));
+        }
+            
+        //look for the most recent activity based off of time.
+            let findActivityQuery = Activity.findOne( {  created: new Date(req.body.timeCreated)  });                    
+
+
+            findActivityQuery.exec(function(err, activity) {
+                if (err) {
+                    responseJson.status = "ERROR";
+                    responseJson.message = "Error updatting data in db." + err;
+                    return res.status(401).send(JSON.stringify(responseJson));
+                }
+                
+                // Change activity's type and corresponding calories burned
+                activity.type = req.body.newType;
+                /**This just does determines what the activity is based on the speed. We should change this. */
+                let check = false;
+                if (activity.type = "Biking") {
+                    let MET = 9.5;   
+                    let weight = 70;   //Avg weight in kg
+                    let durationMin =  activity.duration/60;
+                    activity.calsBurned =  (durationMin*MET*3.5*weight)/200;
+                    check = true;
+                }
+                else if (activity.type = "Running") {                    
+                    let MET = 9.8;
+                    let weight = 70;   //Avg weight in kg
+                    let durationMin =  activity.duration/60;
+                    activity.calsBurned =  (durationMin*MET*3.5*weight)/200;
+                    check = true;
+                }
+                else if (activity.type = "Walking") {
+                    let MET = 3.8;
+                    let weight = 70;   //Avg weight in kg
+                    let durationMin =  activity.duration/60;
+                    activity.calsBurned =  (durationMin*MET*3.5*weight)/200;
+                    check = true;
+                }               
+                responseJson.message = "Activity Type Changed Sucessfully";
+                return res.status(200).send(JSON.stringify(responseJson));
+                          
+        });                 
+    });
 });
 
 
