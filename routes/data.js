@@ -70,33 +70,6 @@ function authenticateAuthToken(req) {
 
 }
 
-    /*request({
-      method: "GET",
-      uri: "http://api.openweathermap.org/data/2.5/weather",
-      qs: {
-        lon: location.longitude,
-        lat: location.latitude,        
-         units: "imperial",
-         appid: APIKEY
-      }
-    }, function(error, response, body) {
-        if(error){
-            var weather = {
-                temp: 0, 
-                humidity: 0
-            };
-            return (weather);
-        }
-
-        var data = JSON.parse(body);                
-        var weather = {
-            temp: data.main.temp, 
-            humidity: data.main.humidity
-        };
-        return (weather);
-    });
-}*/
-
 
 // POST: Adds reported measurement and new activity to the database
 // Authentication: APIKEY. The device reporting must have a valid APIKEY
@@ -455,8 +428,6 @@ router.get("/all", function(req, res) {
                 }
                 
                     
-               
-                    
                 //Create list of activity data         
                 for (let newActivity of recentActivities) { 
 
@@ -469,15 +440,6 @@ router.get("/all", function(req, res) {
                             date:           newActivity.created,
                             duration:       newActivity.duration,
                             calsBurned:      newActivity.calsBurned
-            
-                        //
-                        //measurement: [{
-                        //    loc:            [newActivity.longitude, newActivity.latitude],
-                        //    uv:             newActivity.uv,
-                        //    speed:         newActivity.speed,
-                        //    timeReported:  newActivity.timeReported, 
-                        //}]            
-                        
                         
                     }
                         
