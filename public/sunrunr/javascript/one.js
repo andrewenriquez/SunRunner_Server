@@ -1,6 +1,4 @@
-//import { get } from "mongoose";
 
-//let map = null;
 
 function getOneData() {
    //console.log("recent button pressed");
@@ -54,7 +52,8 @@ function displayOneData(data, textSatus, jqXHR) {
       for (let i of measurements) {
         speedMeasurements.push(i.speed);
         uvMeasurements.push(i.uv);
-        timePoints.push(i.timeReported);
+        timePoints.push(new Date(i.timeReported).getHours() +":"+ new Date(i.timeReported).getMinutes() +":"
+        + new Date(i.timeReported).getSeconds());
 
       }
       
@@ -72,10 +71,31 @@ function displayOneData(data, textSatus, jqXHR) {
           data: {
               labels: timePoints,
               datasets: [{
-                  label: 'Measurements',
-                  backgroundColor: 'rgb(255, 99, 132)',
-                  borderColor: 'rgb(255, 99, 132)',
+                  label: 'Speed',
+                  //backgroundColor: 'rgb(255, 99, 132)',
+                  borderColor: 'rgb(138,43,226)',
                   data: speedMeasurements
+              }]
+          },
+      
+          // Configuration options go here
+          options: {}
+      });
+
+      var ctx = document.getElementById('myChart2').getContext('2d');
+      
+      var chart = new Chart(ctx, {
+          // The type of chart we want to create
+          type: 'line',
+      
+          // The data for our dataset
+          data: {
+              labels: timePoints,
+              datasets: [{
+                  label: 'UV Exposure',
+                  //backgroundColor: 'rgb(255, 125, 132)',
+                  borderColor: 'rgb(204,204,0)',
+                  data: uvMeasurements
               }]
           },
       
