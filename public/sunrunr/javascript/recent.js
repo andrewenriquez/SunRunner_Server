@@ -361,12 +361,12 @@ function initRecent() {
     case 1:
       //change page
       $("#today").html("MONDAY (Today)");
-      $("#yesterday").html("FRIDAY (Yesterday)");
-      $("#twoDaysAgo").html("THURSDAY");
-      $("#threeDaysAgo").html("WEDNESDAY");
-      $("#fourDaysAgo").html("TUESDAY");
-      $("#fiveDaysAgo").html("MONDAY");
-      $("#sixDaysAgo").html("SUNDAY");
+      $("#yesterday").html("SUNDAY (Yesterday)");
+      $("#twoDaysAgo").html("SATURDAY");
+      $("#threeDaysAgo").html("FRIDAY");
+      $("#fourDaysAgo").html("THURSDAY");
+      $("#fiveDaysAgo").html("WEDNESDAY");
+      $("#sixDaysAgo").html("TUESDAY");
 
       break;
 

@@ -13,6 +13,26 @@ function getOneData() {
 
 }
 
+function userChangeActivity() {
+
+    let activityDate = window.location.search;
+
+    $.ajax({
+        url: '/data/changeActivity'+activityDate+
+        '&newType='+$("#inputGroupSelect04").val(),
+        type: 'GET',
+        headers: { 'x-auth': window.localStorage.getItem("authToken") },
+        dataType: 'json'
+      })
+        .done(displayMessage)
+        .fail(recentPotholeError);
+    
+    }
+
+function displayMessage(data, textSatus, jqXHR) {
+    console.log(data);
+}
+
 function displayOneData(data, textSatus, jqXHR) {
   //$("#main").show();
   // If there's at least one pothole, draw the map
@@ -57,7 +77,7 @@ function displayOneData(data, textSatus, jqXHR) {
 
       }
 
-      let cardHTML = "<div class=\"card\"><div class=\"card-header text-light bg-info\">"+firstRep+"</div><div class=\"card-body\">"
+      let cardHTML = "<div class=\"card\"><div class=\"card-header text-light bg-info\" id=\"title\">"+firstRep+"</div><div class=\"card-body\">"
       cardHTML += "<h5 class=\"card-title\" id=\"type\">"+type+"</h5><h6 class=\"card-subtitle mb-2 text-muted\" id=\"duration\">";
       cardHTML += duration+" min</h6><p class=\"card-text\">Temperature: "+temp.toFixed(1)+String.fromCharCode(176)+"F Humidity: "+humid+"%";
       cardHTML += "</p><table class=\"table\"><tbody><tr><td>Calories:</td><td id=\"calories\">"+cal+"</td></tr><tr><td>Speed:";
@@ -68,11 +88,12 @@ function displayOneData(data, textSatus, jqXHR) {
       cardHTML += "<option selected>Change...</option> <option value=\"Walking\">Walking</option><option value=\"Running\">Running</option>";
       cardHTML += "<option value=\"Biking\">Biking</option> </select> <div class=\"input-group-append\">";
       cardHTML += "<button class=\"btn btn-outline-secondary\" id=\"changeType\" type=\"button\">Submit</button></div></div>";
-      //let firstRepDate = new Date(firstRep);
-      //let todayWeek = todayDate.getDay();
-      //let firstRepWeek = firstRepDate.getDay();
-      //line
+      
+      
+
       $("#one").html(cardHTML);
+
+
 
       var ctx = document.getElementById('myChart').getContext('2d');
       
@@ -157,7 +178,7 @@ function displayOneData(data, textSatus, jqXHR) {
           }
       });
 
-
+      $("#changeType").click(userChangeActivity); //event handler
 }
       //$("#all").append(cardHTML);
 
