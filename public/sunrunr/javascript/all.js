@@ -1,6 +1,6 @@
 //import { get } from "mongoose";
 
-let map = null;
+//let map = null;
 
 function getAllData() {
    //console.log("recent button pressed");
@@ -30,19 +30,22 @@ function displayAllData(data, textSatus, jqXHR) {
 
     // Start of the list displaying all data points.
     //looping through all potholes and concatenating them to a list.
-     for (var i = data.activities.length - 1; i >= 0; i--) {
+     for (var i = 0; i < data.activities.length; i++) {
 
-      let speed = data.activities[i].averageSpeed;
-      let uv = data.activities[i].averageUV;
+      let speed = data.activities[i].averageSpeed.toFixed(1);
+      let uv = data.activities[i].averageUV.toFixed(1);
       let type = data.activities[i].activityType;
-      let firstRep = Date(data.activities[i].date);
+      let firstRep = data.activities[i].date;
       let duration = data.activities[i].duration / 60;
+      let temp = data.activities[i].temp;
+      let humid = data.activities[i].humid;
       //let lastRep = data.potholes[i].lastReporte;
-      let cal = data.activities[i].calsBurned;
+      let cal = data.activities[i].calsBurned.toFixed(1);
+      firstRep = new Date(firstRep);
       
       let cardHTML = "<div class=\"card\"><div class=\"card-header text-light bg-info\">"+firstRep+"</div><div class=\"card-body\">"
       cardHTML += "<h5 class=\"card-title\" id=\"type\">"+type+"</h5><h6 class=\"card-subtitle mb-2 text-muted\" id=\"duration\">";
-      cardHTML += duration+" min</h6><p class=\"card-text\">Some quick example text.";
+      cardHTML += duration+" min</h6><p class=\"card-text\">Temperature: "+temp.toFixed(1)+String.fromCharCode(176)+"F Humidity: "+humid+"%";
       cardHTML += "</p><table class=\"table\"><tbody><tr><td>Calories:</td><td id=\"calories\">"+cal+"</td></tr><tr><td>Speed:";
       cardHTML += " </td><td id=\"speed\">"+speed+"</td></tr><tr><td>UV:</td><td id=\"uv\">"+uv+"</td></tr></tbody></table><a href=\"#\"";
       cardHTML += "class=\"card-link\">More Info</a></div></div>";
@@ -142,11 +145,14 @@ $(document).ready(function() {
 
 // Handle authentication on page load
 $(function() {
+    
+  console.log(this.length);
   // If there's no authToekn stored, redirect user to 
   // the sign-in page (which is index.html)
   if (!window.localStorage.getItem("authToken")) {
     window.location.replace("index.html");
   }
+
   else {
     initRecent();
   }

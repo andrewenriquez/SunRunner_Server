@@ -343,7 +343,7 @@ router.get("/summary", function(req, res) {
                  date:           newActivity.created,
                  duration:       newActivity.duration,
                  calsBurned:      newActivity.calsBurned,
-                 temp:          newActivity.temperature,
+                 temp:          newActivity.temperture,
                  humid:         newActivity.humidity
     
                 //temperture:  Number,
@@ -439,7 +439,9 @@ router.get("/all", function(req, res) {
                             activityType:   newActivity.type,
                             date:           newActivity.created,
                             duration:       newActivity.duration,
-                            calsBurned:      newActivity.calsBurned
+                            calsBurned:      newActivity.calsBurned,
+                            temp:          newActivity.temperture,
+                            humid:         newActivity.humidity,
                         
                     }
                         
@@ -462,28 +464,14 @@ router.get("/all", function(req, res) {
 });
 
 
-router.get("/one/:time", function(req, res) {
+router.get("/one", function(req, res) {
+    let activityID = req.query.activity;
+
+
     let responseJson = {
         success: true,
         message: "",
-        activity: {
-            type:          String,
-            avgSpeed:       Number,
-            avgUV:          Number,
-            calsBurned:     Number,
-            deviceId:       String,
-            created:   { type: Date},
-            measurement: [{
-                loc:            [{ type: [Number], index: '2dsphere'}],
-                uv:             Number,
-                speed:          Number,
-                timeReported:   { type: Date}, 
-              
-            }],     
-            temperture:  Number,
-            humidity:    Number      
-
-        },
+        activity: {},
     };
     
     //Authenticate User
@@ -500,7 +488,7 @@ router.get("/one/:time", function(req, res) {
     let activityQuery = Activity.findOne({
         "created": 
         {
-            $eq: new Date(time)
+            $eq: new Date(activityID)
         },
 
     });    
@@ -514,19 +502,25 @@ router.get("/one/:time", function(req, res) {
 
 
         //Create new activity data       
-        responseJson.activity.type = newActivity.type;
-        responseJson.activity.avgSpeed = newActivity.avgSpeed;
-        responseJson.activity.avgUV = newActivity.avgUV; 
-        responseJson.activity.calsBurned = newActivity.calsBurned;
-        responseJson.activity.deviceId = newActivity.deviceId;
-        responseJson.activity.created = newActivity.created;
-        responseJson.activity.temperture = newActivity.temperture;
-        responseJson.activity.humidity = newActivity.humidity;
+        responseJson.activity = {
+            deviceId:       newActivity.deviceId,
+            averageSpeed:   newActivity.avgSpeed,
+            averageUV:      newActivity.avgUV,
+            activityType:   newActivity.type,
+            date:           newActivity.created,
+            duration:       newActivity.duration,
+            calsBurned:      newActivity.calsBurned,
+            temp:          newActivity.temperture,
+            humid:         newActivity.humidity,
+            measurementSize: newActivity.measurement.length,
+            measurements:  [],
+
+        }
 
         //Create list of measurements for activity
         for (let newMeasurement of newActivity.measurement) { 
 
-            responseJson.activity.measurement.push(
+            responseJson.activity.measurements.push(
                 {                    
                 
                     loc:            [newMeasurement.longitude, newMeasurement.latitude],
