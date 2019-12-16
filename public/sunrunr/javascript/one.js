@@ -56,11 +56,24 @@ function displayOneData(data, textSatus, jqXHR) {
         + new Date(i.timeReported).getSeconds());
 
       }
-      
+
+      let cardHTML = "<div class=\"card\"><div class=\"card-header text-light bg-info\">"+firstRep+"</div><div class=\"card-body\">"
+      cardHTML += "<h5 class=\"card-title\" id=\"type\">"+type+"</h5><h6 class=\"card-subtitle mb-2 text-muted\" id=\"duration\">";
+      cardHTML += duration+" min</h6><p class=\"card-text\">Temperature: "+temp.toFixed(1)+String.fromCharCode(176)+"F Humidity: "+humid+"%";
+      cardHTML += "</p><table class=\"table\"><tbody><tr><td>Calories:</td><td id=\"calories\">"+cal+"</td></tr><tr><td>Speed:";
+      cardHTML += " </td><td id=\"speed\">"+speed+"</td></tr><tr><td>UV:</td><td id=\"uv\">"+uv+"</td></tr></tbody></table>";
+      cardHTML += "<div class=\"input-group\">";
+      //Added input for changing the activity
+      cardHTML += "<select class=\"custom-select\" id=\"inputGroupSelect04\" aria-label=\"Example select with button addon\">";
+      cardHTML += "<option selected>Change...</option> <option value=\"Walking\">Walking</option><option value=\"Running\">Running</option>";
+      cardHTML += "<option value=\"Biking\">Biking</option> </select> <div class=\"input-group-append\">";
+      cardHTML += "<button class=\"btn btn-outline-secondary\" id=\"changeType\" type=\"button\">Submit</button></div></div>";
       //let firstRepDate = new Date(firstRep);
       //let todayWeek = todayDate.getDay();
       //let firstRepWeek = firstRepDate.getDay();
       //line
+      $("#one").html(cardHTML);
+
       var ctx = document.getElementById('myChart').getContext('2d');
       
       var chart = new Chart(ctx, {
@@ -70,8 +83,10 @@ function displayOneData(data, textSatus, jqXHR) {
           // The data for our dataset
           data: {
               labels: timePoints,
+              
               datasets: [{
                   label: 'Speed',
+                  
                   //backgroundColor: 'rgb(255, 99, 132)',
                   borderColor: 'rgb(138,43,226)',
                   data: speedMeasurements
@@ -79,7 +94,26 @@ function displayOneData(data, textSatus, jqXHR) {
           },
       
           // Configuration options go here
-          options: {}
+          options: {
+              title: {
+                  display: true,
+                  text: 'Speed of the Activity'
+              }, scales: {
+                yAxes: [{ 
+                  scaleLabel: {
+                    display: true,
+                    labelString: "Miles Per Hour"
+                  }
+                }],
+                xAxes: [{ 
+                  scaleLabel: {
+                    display: true,
+                    labelString: "Time (HH:MM:SS)"
+                  }
+                }]
+              }
+
+          }
       });
 
       var ctx = document.getElementById('myChart2').getContext('2d');
@@ -100,7 +134,27 @@ function displayOneData(data, textSatus, jqXHR) {
           },
       
           // Configuration options go here
-          options: {}
+          options: {
+            title: {
+                display: true,
+                text: 'UV Exposure of the Activity'
+            }, scales: {
+              yAxes: [{ 
+                scaleLabel: {
+                  display: true,
+                  labelString: "Suns"
+                }
+              }],
+              xAxes: [{ 
+                scaleLabel: {
+                  display: true,
+                  labelString: "Time (HH:MM:SS)"
+                }
+              }]
+            }
+
+
+          }
       });
 
 
