@@ -226,13 +226,14 @@ function displayMostRecentData(data, textSatus, jqXHR) {
       let temp = data.activities[i].temp;
       let humid = data.activities[i].humid;
       
-      let cardHTML = "<div class=\"card\"><div class=\"card-body\">"
+      let cardHTML = "<div class=\"col-sm-10 col-md-3 col-lg-4\"><div class=\"mt-4\"><div class=\"card\"><div class=\"card-body\">"
       cardHTML += "<h5 class=\"card-title\" id=\"type\">"+type+"</h5><h6 class=\"card-subtitle mb-2 text-muted\" id=\"duration\">";
       cardHTML += duration+" min</h6><p class=\"card-text\">Temperature: "+temp.toFixed(1)+String.fromCharCode(176)+"F Humidity: "+humid+"%";
       cardHTML += "</p><table class=\"table\"><tbody><tr><td>Calories:</td><td id=\"calories\">"+cal+"</td></tr><tr><td>Speed:";
       cardHTML += " </td><td id=\"speed\">"+speed+"</td></tr><tr><td>UV:</td><td id=\"uv\">"+uv+"</td></tr></tbody></table>";
       cardHTML += "<button id = \""+firstRep+"\" type=\"button\" class=\"btn btn-primary\" data-toggle=\"button\" aria-pressed=\"false\">More Info</button>";
-      cardHTML +="</div></div>";
+      //cardHTML += 
+      cardHTML +="</div></div></div></div>";
 
       $("button").click(myCallback);
       
@@ -243,40 +244,9 @@ function displayMostRecentData(data, textSatus, jqXHR) {
 
       if (todayWeek == 0) { todayWeek = 7; }
       if (firstRepWeek == 0) { firstRepWeek = 7; } //change to 7 for sundays.
+
+      $("#sum").append(cardHTML);
       
-  switch(Math.abs(todayWeek - firstRepWeek)) {
-    case 0:                      //sunday
-      //change page
-      $("#todayCards").append(cardHTML);
-
-      break;
-
-    case 1:
-      //change page
-      $("#yesterdayCards").append(cardHTML);
-      break;
-
-    case 2:
-      $("#twoDaysAgoCards").append(cardHTML);     
-      break;
-
-    case 3:
-      $("#threeDaysAgoCards").append(cardHTML);   
-      break;
-
-    case 4:
-      $("#fourDaysAgoCards").append(cardHTML);
-
-      break;
-      
-    case 5:
-      $("#fiveDaysAgoCards").append(cardHTML); 
-      break;
-
-    case 6:
-      $("#sixDaysAgoCards").append(cardHTML);
-      break;
-  }
 
       //$("#todayCards").append(cardHTML);
 
