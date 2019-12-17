@@ -624,4 +624,72 @@ router.get("/changeActivity", function(req, res) {
 });
 
 
+//This allows the user to change the devices type 
+router.get("/replaceDevice", function(req, res) {
+
+    let oldDeviceId = req.query.oldDeviceId;
+    let newDeviceId = req.query.newDeviceId;
+    let userEmail = req.query.userEmail;
+
+
+    let responseJson = {
+        success: true,
+        message: "",
+        devices: {},
+    };
+    
+    //Authenticate User
+    if (authenticateRecentEndpoint) {
+        decodedToken = authenticateAuthToken(req);
+        if (!decodedToken) {
+            responseJson.success = false;
+            responseJson.message = "Authentication failed";
+            return res.status(401).json(responseJson);
+        }
+    }
+
+    // Find all devices with deviceId
+    let deviceQuery = Device.findOne({
+        "deviceId": 
+        {
+            $eq: oldDeviceId
+        },
+
+    });    
+    
+    deviceQuery.exec({}, function(err, oldDevice) {
+        if (err) {
+            responseJson.success = false;
+            responseJson.message = "Error changing device.";
+            return res.status(400).send(JSON.stringify(responseJson));
+        }
+        //Check that new and old device are different
+        if (oldDevice.deviceId == req.query.newDeviceId) {
+            responseJson.message = "Device already registered.";
+            return res.status(201).send(JSON.stringify(responseJson));
+
+        }
+        //Erase userEmail from old device
+        else {
+            oldDevice.userEmail = "";
+            responseJson.message = "Device: "+device.deviceId+ "successfully updated.";
+            //return res.status(200).send(JSON.stringify(responseJson));
+        }
+
+        device.save(function(err) {
+            if (err) {
+            responseJson.success = "ERROR";
+            responseJson.message = "Error saving data in device db." + err;
+            return res.status(201).send(JSON.stringify(responseJson));
+        }
+
+        responseJson.success = true;
+        return res.status(200).send(JSON.stringify(responseJson));
+        });
+        
+    });
+
+});
+
+
 module.exports = router;
