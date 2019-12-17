@@ -21,13 +21,13 @@ function sendReqForAccountInfo() {
         device.deviceId + ", APIKEY: " + device.apikey + 
         " <button id='ping-" + device.deviceId + "' class='waves-effect waves-light btn'>Ping</button> " +
         " <button id='editDevice-' class='waves-effect waves-light btn'>Edit</button> " +
-        " <button id='deleteDevice-' class='waves-effect red darken-4 waves-light btn'>Delete</button> " +
+        " <button id='deleteDevice-"  + device.deviceId +"' class='waves-effect red darken-4 waves-light btn'>Delete</button> " +
         " </li>");
-      $("#ping-"+device.deviceId).click(function(event) {
+     $("#ping-"+device.deviceId).click(function(event) {
         pingDevice(event, device.deviceId);
       });
 
-      $("#deleteDevice"+device.deviceId).click(function(event) {
+      $("#deleteDevice-"+device.deviceId).click(function(event) {
         deleteDevice(event, device.deviceId);
       });
     }
@@ -92,22 +92,22 @@ function sendReqForAccountInfo() {
       }); 
   }
   
-  function pingDevice(event, deviceId) {
+  function deleteDevice(event, deviceId) {
     $.ajax({
          url: '/devices/delete',
          type: 'POST',
-         headers: { 'x-auth': window.localStorage.getItem("authToken") },   
-         data: { 'deviceId': deviceId }, 
-         responseType: 'json',
-         success: function (data, textStatus, jqXHR) {
-             console.log("Deleted.");
-         },
-         error: function(jqXHR, textStatus, errorThrown) {
-             var response = JSON.parse(jqXHR.responseText);
-             $("#error").html("Error: " + response.message);
-             $("#error").show();
-         }
-     }); 
+         headers: { 'x-auth': window.localStorage.getItem("authToken") },
+         contentType: 'application/json',   
+         data: JSON.stringify({ deviceId: deviceId }),  
+         dataType: 'json',
+     })
+     .done(function (data, textStatus, jqXHR) {
+      // Add new device to the device list
+      console.log(data);
+    })
+     .fail(function(jqXHR, textStatus, errorThrown) {
+      console.log(jqXHR);
+    }); 
  }
 
   // Show add device form and hide the add device button (really a link)
