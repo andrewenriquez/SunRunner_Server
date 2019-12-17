@@ -153,7 +153,7 @@ router.post("/hit", function(req, res) {
                         let sumSpeed = parseFloat(req.body.speed);
                         let sumUV = parseFloat(req.body.uv);
                         let etime = parseInt(req.body.time);
-                        etime = new Date(etime);
+                        etime = new Date(etime * 1000);
                         let numMeasurements = 1;
 
                         //calculating averages and adding them to activity database.
@@ -214,7 +214,7 @@ router.post("/hit", function(req, res) {
                 else if (req.body.index == "0"){
 
                     let etime = parseInt(req.body.time);
-                    etime = new Date(etime);
+                    etime = new Date(etime * 1000);
                     var activity = new Activity({                
                         //type:          String,
                         //temperture:  Number,

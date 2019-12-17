@@ -72,8 +72,11 @@ function displayOneData(data, textSatus, jqXHR) {
       for (let i of measurements) {
         speedMeasurements.push(i.speed);
         uvMeasurements.push(i.uv);
-        timePoints.push(new Date(i.timeReported).getHours() +":"+ new Date(i.timeReported).getMinutes() +":"
-        + new Date(i.timeReported).getSeconds());
+
+        let measTime = new Date(i.timeReported);
+
+        timePoints.push(measTime.getHours() +":"+ measTime.getMinutes() +":"
+        + measTime.getSeconds());
 
       }
 
