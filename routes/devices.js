@@ -158,4 +158,67 @@ router.post('/ping', function(req, res, next) {
     return res.status(200).json(responseJson);
 });
 
+
+//Delete Device from database
+router.post('/delete', function(req, res, next) {
+  let responseJson = {
+      success: false,
+      message : "",
+  };
+  let deviceExists = false;
+  let deviceId = req.body.deviceId;
+  
+  // Ensure the request includes the deviceId parameter
+  if( !req.body.hasOwnProperty("deviceId")) {
+      responseJson.message = "Missing deviceId.";
+      return res.status(400).json(responseJson);
+  }
+  
+  // If authToken provided, use email in authToken 
+  try {
+      let decodedToken = jwt.decode(req.headers["x-auth"], secret);
+  }
+  catch (ex) {
+      responseJson.message = "Invalid authorization token.";
+      return res.status(400).json(responseJson);
+  }
+  
+let deviceQuery = Device.findOne({
+    "deviceId": 
+    {
+        $eq: deviceId
+    },
+
+});    
+
+deviceQuery.exec({}, function(err, device) {
+    if (err) {
+        responseJson.success = false;
+        responseJson.message = "Error changing device.";
+        return res.status(400).send(JSON.stringify(responseJson));
+    }
+    else{
+      userEmail = device.userEmail;
+      device.userEmail = "";
+      responseJson.message = "Device: "+device.deviceId+ "successfully updated.";
+    }
+    device.save(function(err) {
+      if (err) {
+      responseJson.success = "ERROR";
+      responseJson.message = "Error saving data in device db." + err;
+      return res.status(201).send(JSON.stringify(responseJson));
+  }
+
+  responseJson.success = true;
+  return res.status(200).send(JSON.stringify(responseJson));
+  });
+
+          
+  responseJson.success = true;
+  responseJson.message = "Device ID " + req.body.deviceId + " removed from user.";
+  return res.status(200).json(responseJson);
+});
+});
+
+
 module.exports = router;
