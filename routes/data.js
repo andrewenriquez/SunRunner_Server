@@ -629,8 +629,7 @@ router.get("/replaceDevice", function(req, res) {
 
     let oldDeviceId = req.query.oldDeviceId;
     let newDeviceId = req.query.newDeviceId;
-    let userEmail = req.query.userEmail;
-
+    //let userEmail = req.query.userEmail;
 
     let responseJson = {
         success: true,
@@ -671,7 +670,66 @@ router.get("/replaceDevice", function(req, res) {
         }
         //Erase userEmail from old device
         else {
-            oldDevice.userEmail = "";
+            oldDevice.deviceId = newDeviceId;
+            responseJson.message = "Device: "+oldDevice.deviceId+ "successfully updated.";
+            //return res.status(200).send(JSON.stringify(responseJson));
+        }
+
+        oldDevice.save(function(err) {
+            if (err) {
+            responseJson.success = "ERROR";
+            responseJson.message = "Error saving data in device db." + err;
+            return res.status(201).send(JSON.stringify(responseJson));
+        }
+
+        responseJson.success = true;
+        return res.status(200).send(JSON.stringify(responseJson));
+        });
+        
+    });
+
+});
+
+
+//This allows the user to delete a device
+router.get("/deleteDevice", function(req, res) {
+
+    let deviceId = req.query.deviceId;
+    
+    let responseJson = {
+        success: true,
+        message: "",
+        devices: {},
+    };
+    
+    //Authenticate User
+    if (authenticateRecentEndpoint) {
+        decodedToken = authenticateAuthToken(req);
+        if (!decodedToken) {
+            responseJson.success = false;
+            responseJson.message = "Authentication failed";
+            return res.status(401).json(responseJson);
+        }
+    }
+
+    // Find all devices with deviceId
+    let deviceQuery = Device.findOne({
+        "deviceId": 
+        {
+            $eq: deviceId
+        },
+
+    });    
+    
+    deviceQuery.exec({}, function(err, device) {
+        if (err) {
+            responseJson.success = false;
+            responseJson.message = "Error changing device.";
+            return res.status(400).send(JSON.stringify(responseJson));
+        }
+        //Erase userEmail from old device
+        else {
+            device.userEmail = "";
             responseJson.message = "Device: "+device.deviceId+ "successfully updated.";
             //return res.status(200).send(JSON.stringify(responseJson));
         }
