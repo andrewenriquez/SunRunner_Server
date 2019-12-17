@@ -167,11 +167,17 @@ router.post('/delete', function(req, res, next) {
   };
   let deviceExists = false;
   let deviceId = req.body.deviceId;
-  
+  console.log(req.body.deviceId);
+  // Ensure the request includes the deviceId parameter
   // Ensure the request includes the deviceId parameter
   if( !req.body.hasOwnProperty("deviceId")) {
-      responseJson.message = "Missing deviceId.";
-      return res.status(400).json(responseJson);
+    responseJson.message = "Missing deviceId.";
+    return res.status(400).json(responseJson);
+  }
+
+  else {
+
+    console.log("works");
   }
   
   // If authToken provided, use email in authToken 

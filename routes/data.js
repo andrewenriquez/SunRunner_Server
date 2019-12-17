@@ -692,7 +692,7 @@ router.get("/replaceDevice", function(req, res) {
 
 
 //This allows the user to delete a device
-router.get("/deleteDevice", function(req, res) {
+router.get("/delete", function(req, res) {
 
     let deviceId = req.query.deviceId;
     
