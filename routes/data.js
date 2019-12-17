@@ -91,18 +91,28 @@ router.post("/hit", function(req, res) {
         return res.status(201).send(JSON.stringify(responseJson));
     }
     
-    if( !req.body.hasOwnProperty("longitude") ) {
+    if( !req.body.hasOwnProperty("lon") ) {
         responseJson.message = "Request missing longitude parameter.";
         return res.status(201).send(JSON.stringify(responseJson));
     }
     
-    if( !req.body.hasOwnProperty("latitude") ) {
+    if( !req.body.hasOwnProperty("lat") ) {
         responseJson.message = "Request missing latitude parameter.";
         return res.status(201).send(JSON.stringify(responseJson));
     }
 
     if( !req.body.hasOwnProperty("speed") ) {
         responseJson.message = "Request missing speed parameter.";
+        return res.status(201).send(JSON.stringify(responseJson));
+    }
+
+    if( !req.body.hasOwnProperty("time") ) {
+        responseJson.message = "Request missing time parameter.";
+        return res.status(201).send(JSON.stringify(responseJson));
+    }
+
+    if( !req.body.hasOwnProperty("uv") ) {
+        responseJson.message = "Request missing uv parameter.";
         return res.status(201).send(JSON.stringify(responseJson));
     }
     
@@ -142,6 +152,8 @@ router.post("/hit", function(req, res) {
 
                         let sumSpeed = parseFloat(req.body.speed);
                         let sumUV = parseFloat(req.body.uv);
+                        let etime = parseInt(req.body.time);
+                        etime = new Date(etime);
                         let numMeasurements = 1;
 
                         //calculating averages and adding them to activity database.
@@ -157,11 +169,11 @@ router.post("/hit", function(req, res) {
                         activity.avgSpeed = sumSpeed / numMeasurements;
                     activity.measurement.push(
                         {
-                            loc:            [req.body.longitude, req.body.latitude],
+                            loc:            [req.body.lon, req.body.lat],
                             uv:             req.body.uv,
                             speed:          req.body.speed,
                             index:          req.body.index,
-                            timeReported:   Date.now(),
+                            timeReported:   etime
                             }
                         
 
@@ -200,20 +212,25 @@ router.post("/hit", function(req, res) {
                 //if the post req has an index value of 0, then we should consider this a new activity and record the start time
                 //saving it to the "created" field in the new activity mongo document.
                 else if (req.body.index == "0"){
+
+                    let etime = parseInt(req.body.time);
+                    etime = new Date(etime);
                     var activity = new Activity({                
                         //type:          String,
                         //temperture:  Number,
                         //humidity:    Number,
+                        
+
                         avgSpeed:       req.body.speed,
                         avgUV:          req.body.uv,
                         deviceId:       req.body.deviceId,
                         created:        Date.now(),
                         measurement: [{
-                            loc:            [req.body.longitude, req.body.latitude],
+                            loc:            [req.body.lon, req.body.lat],
                             uv:             req.body.uv,
                             speed:          req.body.speed,
                             index:          req.body.index,
-                            timeReported:   Date.now() //this needs to be done on the device and sent over
+                            timeReported:   etime, //this needs to be done on the device and sent over
                         }],     
                          
                     });
