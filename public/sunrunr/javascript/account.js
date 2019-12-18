@@ -61,10 +61,17 @@ function sendReqForAccountInfo() {
          $("#addDeviceForm").before("<li class='collection-item'>ID: " +
          $("#deviceId").val() + ", APIKEY: " + data["apikey"] + 
            " <button id='ping-" + $("#deviceId").val() + "' class='waves-effect waves-light btn'>Ping</button> " +
+           " "+
+           " <button id='editDevice-" + $("#deviceId").val() + "' class='waves-effect waves-light btn'>Edit</button> " +
+           " "+
+           " <button id='deleteDevice-" + $("#deviceId").val() + "' class='waves-effect red darken-4 waves-light btn'>Delete</button> " +
            "</li>");
          $("#ping-"+$("#deviceId").val()).click(function(event) {
            pingDevice(event, device.deviceId);
          });
+         $("#deleteDevice-"+$("#deviceId").val()).click(function(event) {
+          deleteDevice(event, data.deviceId);
+        });
          hideAddDeviceForm();
        })
        .fail(function(jqXHR, textStatus, errorThrown) {
@@ -103,6 +110,7 @@ function sendReqForAccountInfo() {
      })
      .done(function (data, textStatus, jqXHR) {
       // Add new device to the device list
+        location.reload();
       console.log(data);
     })
      .fail(function(jqXHR, textStatus, errorThrown) {

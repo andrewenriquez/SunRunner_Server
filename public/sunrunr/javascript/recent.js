@@ -220,17 +220,23 @@ function displayMostRecentData(data, textSatus, jqXHR) {
       let uv = data.activities[i].averageUV.toFixed(1);
       let type = data.activities[i].activityType;
       let firstRep = data.activities[i].date;
+      firstRep = new Date(firstRep);
       let duration = data.activities[i].duration / 60;
       //let lastRep = data.potholes[i].lastReporte;
       let cal = data.activities[i].calsBurned.toFixed(1);
       let temp = data.activities[i].temp;
+      temp = temp.toFixed(1)+String.fromCharCode(176);
       let humid = data.activities[i].humid;
+      let deviceId = data.activities[i].deviceId;
       
       let cardHTML = "<div class=\"col-sm-10 col-md-3 col-lg-4\"><div class=\"mt-4\"><div class=\"card\"><div class=\"card-body\">"
-      cardHTML += "<h5 class=\"card-title\" id=\"type\">"+type+"</h5><h6 class=\"card-subtitle mb-2 text-muted\" id=\"duration\">";
-      cardHTML += duration+" min</h6><p class=\"card-text\">Temperature: "+temp.toFixed(1)+String.fromCharCode(176)+"F Humidity: "+humid+"%";
+      cardHTML += "<h5 class=\"card-title\" id=\"type\">"+type+"</h5><h6 class=\"card-subtitle mb-2 text-muted\">Device ID: ";
+      cardHTML += deviceId+" </h6><p class=\"card-text\">Date: "+firstRep;
       cardHTML += "</p><table class=\"table\"><tbody><tr><td>Calories:</td><td id=\"calories\">"+cal+"</td></tr><tr><td>Speed:";
-      cardHTML += " </td><td id=\"speed\">"+speed+"</td></tr><tr><td>UV:</td><td id=\"uv\">"+uv+"</td></tr></tbody></table>";
+      cardHTML += " </td><td id=\"speed\">"+speed+"</td></tr><tr><td>UV:</td><td id=\"uv\">"+uv+"</td></tr>"
+      + "<tr><td>Duration: </td><td>"+duration+" mins</td></tr>"
+      + "<tr><td>Temp: </td><td>"+temp+" F</td></tr>"
+      + "<tr><td>Humidity: </td><td>"+humid+" %</td></tr></tbody></table>";
       cardHTML += "<button id = \""+firstRep+"\" type=\"button\" class=\"btn btn-primary\" data-toggle=\"button\" aria-pressed=\"false\">More Info</button>";
       //cardHTML += 
       cardHTML +="</div></div></div></div>";

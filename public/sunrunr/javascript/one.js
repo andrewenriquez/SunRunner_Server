@@ -30,6 +30,7 @@ function userChangeActivity() {
     }
 
 function displayMessage(data, textSatus, jqXHR) {
+      location.reload();
     console.log(data);
 }
 

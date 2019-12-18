@@ -291,7 +291,8 @@ router.post("/hit", function(req, res) {
 // Authentication: Token. A user must be signed in to access this endpoint
 router.get("/summary", function(req, res) {
     let days = 7;
-    
+    //days = parseInt(days);
+    //let iCnt = 0;
     let responseJson = {
         success: true,
         message: "",
@@ -299,9 +300,11 @@ router.get("/summary", function(req, res) {
         numActivities: 0,
         totalCals: 0,
         totalUV: 0,
-        totalDuration: 0
+        totalDuration: 0,
+        deviceSize: 0,
+        iCnt: 0
     };
-    
+    //devices = ?
     //Authenticate User
     if (authenticateRecentEndpoint) {
         decodedToken = authenticateAuthToken(req);
@@ -315,99 +318,12 @@ router.get("/summary", function(req, res) {
     
     // Check to ensure the days is between 1 and 30 (inclsuive), return error if not
     if (days < 1 || days > 7) {
+        responseJson.
         responseJson.success = false;
         responseJson.message = "Invalid days parameter.";
         return res.status(200).json(responseJson);
     }
     
-
-    // Find all activities reported in the spcified number of days
-    let activityQuery = Activity.find({
-        "created": 
-        {
-            $gte: new Date((new Date().getTime() - (days * 24 * 60 * 60 * 1000)))
-        },
-
-    }).sort({ "created": -1 });    
-    
-    activityQuery.exec({}, function(err, recentActivities) {
-        if (err) {
-            responseJson.success = false;
-            responseJson.message = "Error accessing activity db.";
-            return res.status(200).send(JSON.stringify(responseJson));
-        }
-        
-        //Create list of activity data     
-
-         let numActivities = 0;
-             
-        for (let newActivity of recentActivities) { 
-
-            //for (measurements of newActivity.measurement) {
-            //    speedArray.push(measurements.speed);
-                //same uv
-            //}
-            responseJson.totalCals += newActivity.calsBurned;
-            responseJson.totalUV += newActivity.avgUV;
-            responseJson.totalDuration += newActivity.duration;
-
-            responseJson.activities.push(
-                {
-                 deviceId:       newActivity.deviceId,
-                 averageSpeed:   newActivity.avgSpeed,
-                 averageUV:      newActivity.avgUV,
-                 activityType:   newActivity.type,
-                 date:           newActivity.created,
-                 duration:       newActivity.duration,
-                 calsBurned:      newActivity.calsBurned,
-                 temp:          newActivity.temperture,
-                 humid:         newActivity.humidity
-    
-                //temperture:  Number,
-                //humidity:    Number,
-                //measurement: [{
-                //    loc:            [newActivity.longitude, newActivity.latitude],
-                //    uv:             newActivity.uv,
-                //    speed:         newActivity.speed,
-                //    timeReported:  newActivity.timeReported, 
-                //}]            
-                
-                
-            }
-                
-            );
-
-            numActivities++;
-
-        }
-
-        //responseJson.totalCals = totalDuration;
-        responseJson.message = "In the past " + days + " days, you've done " + numActivities + " activities!";
-        return res.status(200).send(JSON.stringify(responseJson));
-    
-    });
-});
-
-
-router.get("/all", function(req, res) {
-    let days = 30;      //MIGHT WANT TO REMOVE OR CHANGE
-    let responseJson = {
-        success: true,
-        message: "",
-        activities: [],
-    };
-    
-    //Authenticate User
-    if (authenticateRecentEndpoint) {
-        decodedToken = authenticateAuthToken(req);
-        if (!decodedToken) {
-            responseJson.success = false;
-            responseJson.message = "Authentication failed";
-            return res.status(401).json(responseJson);
-        }
-    }
-
-    //Get email of current user     
     let userEmail = decodedToken.email;
 
     let numActivities = 0;
@@ -420,68 +336,246 @@ router.get("/all", function(req, res) {
 
     }).sort({ "lastContact": -1 });
 
-    deviceQuery.exec({}, function(err, recentDevices) {
-        if (err) {
-            responseJson.success = false;
-            responseJson.message = "Error accessing devices db.";
-            return res.status(200).send(JSON.stringify(responseJson));
-        }
-                
-        //Loop through devices of user to find all user activities     
-        for (let nextDevice of recentDevices) { 
+    deviceQuery.exec({}, function(err, userDevices) {
+        console.log("device query");
+        responseJson.deviceSize = userDevices.length;
+        //return userDevices;
 
-            // Find all user activities
-            let activityQuery = Activity.find({ 
-                $and:[
-                    { "deviceId": { $eq: nextDevice.deviceId } }, 
-                    { "created": { $gte: new Date((new Date().getTime() - (days * 24 * 60 * 60 * 1000))) } }
-            ]}).sort({ "created": -1 });    
-            
-            activityQuery.exec({}, function(err, recentActivities) {
-                if (err) {
-                    responseJson.success = false;
-                    responseJson.message = "Error accessing activity db.";
-                    return res.status(200).send(JSON.stringify(responseJson));
-                }
-                
-                    
-                //Create list of activity data         
-                for (let newActivity of recentActivities) { 
-
-                    responseJson.activities.push(
-                        {
-                            deviceId:       newActivity.deviceId,
-                            averageSpeed:   newActivity.avgSpeed,
-                            averageUV:      newActivity.avgUV,
-                            activityType:   newActivity.type,
-                            date:           newActivity.created,
-                            duration:       newActivity.duration,
-                            calsBurned:      newActivity.calsBurned,
-                            temp:          newActivity.temperture,
-                            humid:         newActivity.humidity,
-                        
-                    }
-                        
-                    );
-
-                    numActivities++;
-                }
-                responseJson.message = "In the past " + days + " days, you've done " + numActivities + " activities!";
-                return res.status(200).send(JSON.stringify(responseJson));
-            
-            });
-           
-        }
         
+        //let iCnt = 0;
+        for (let i of userDevices) {
+            //console.log("i");
+            //responseJson.iCnt += 1;
+
+            Activity.find({
+
+                $and: [ { deviceId : i.deviceId }, { created : { $gte: new Date((new Date().getTime() - (days * 24 * 60 * 60 * 1000))) } } ]},
+
+                function(err, activities) {
+                    //responseJson.iCnt += 1;
+                    if (err) { //checks error
+                        console.log("error");
+                        responseJson.success = false;
+                        responseJson.message = "Error accessing activity db.";
+                        return res.status(401).send(JSON.stringify(responseJson));
+                    }
+
+                    else if (activities.length > 0) { //find function found an activity with device.
+                        //Create list of activity data     
+                        
+                 //let numActivities = 0;
+                     
+                 for (let newActivity of activities) { 
+         
+                     //for (measurements of newActivity.measurement) {
+                     //    speedArray.push(measurements.speed);
+                         //same uv
+                     //}
+                     responseJson.totalCals += newActivity.calsBurned;
+                     responseJson.totalUV += newActivity.avgUV;
+                     responseJson.totalDuration += newActivity.duration;
+         
+                     responseJson.activities.push(
+                         {
+                          deviceId:       newActivity.deviceId,
+                          averageSpeed:   newActivity.avgSpeed,
+                          averageUV:      newActivity.avgUV,
+                          activityType:   newActivity.type,
+                          date:           newActivity.created,
+                          duration:       newActivity.duration,
+                          calsBurned:      newActivity.calsBurned,
+                          temp:          newActivity.temperture,
+                          humid:         newActivity.humidity
+             
+                         //temperture:  Number,
+                         //humidity:    Number,
+                         //measurement: [{
+                         //    loc:            [newActivity.longitude, newActivity.latitude],
+                         //    uv:             newActivity.uv,
+                         //    speed:         newActivity.speed,
+                         //    timeReported:  newActivity.timeReported, 
+                         //}]            
+                         
+                         
+                     }
+                         
+                     );
+         
+                     numActivities++;
+         
+                 }
+
+                 console.log("@");
+                    
+
+                    }
+
+                    else {
+                       //responseJson.iCnt += 1;
+                    }
+                    console.log("#");
+                    responseJson.iCnt+=1;
+
+                    if (responseJson.iCnt == responseJson.deviceSize) {
+                        responseJson.message = "In the past " + days + " days, you've done " + responseJson.activities.length + " activities!";
+                        return res.status(200).send(JSON.stringify(responseJson));   
+                     }
+                });
+                console.log("*");
+            }
+            console.log("^");
+    });
+    console.log("()");
+    //res.status(200).send(JSON.stringify(responseJson));
+});
+
+
+
+
+router.get("/all", function(req, res) {
+    let days = 60;
+    //days = parseInt(days);
+    //let iCnt = 0;
+    let responseJson = {
+        success: true,
+        message: "",
+        activities: [],
+        numActivities: 0,
+        totalCals: 0,
+        totalUV: 0,
+        totalDuration: 0,
+        deviceSize: 0,
+        iCnt: 0
+    };
+    //devices = ?
+    //Authenticate User
+    if (authenticateRecentEndpoint) {
+        decodedToken = authenticateAuthToken(req);
+        if (!decodedToken) {
+            responseJson.success = false;
+            responseJson.message = "Authentication failed";
+            return res.status(401).json(responseJson);
+        }
+    }
     
-    });    
+    
+    // Check to ensure the days is between 1 and 30 (inclsuive), return error if not
+    if (days < 1 || days > 365) {
+        responseJson.
+        responseJson.success = false;
+        responseJson.message = "Invalid days parameter.";
+        return res.status(200).json(responseJson);
+    }
+    
+    let userEmail = decodedToken.email;
 
-           
+    let numActivities = 0;
+    // Find all devices for user
+    let deviceQuery = Device.find({
+        "userEmail": 
+        {
+            $eq: userEmail
+        },
 
+    }).sort({ "lastContact": -1 });
+
+    deviceQuery.exec({}, function(err, userDevices) {
+        console.log("device query");
+        responseJson.deviceSize = userDevices.length;
+        //return userDevices;
+
+        
+        //let iCnt = 0;
+        for (let i of userDevices) {
+            //console.log("i");
+            //responseJson.iCnt += 1;
+
+            Activity.find({
+
+                $and: [ { deviceId : i.deviceId }, { created : { $gte: new Date((new Date().getTime() - (days * 24 * 60 * 60 * 1000))) } } ]},
+
+                function(err, activities) {
+                    //responseJson.iCnt += 1;
+                    if (err) { //checks error
+                        console.log("error");
+                        responseJson.success = false;
+                        responseJson.message = "Error accessing activity db.";
+                        return res.status(401).send(JSON.stringify(responseJson));
+                    }
+
+                    else if (activities.length > 0) { //find function found an activity with device.
+                        //Create list of activity data     
+                        
+                 //let numActivities = 0;
+                     
+                 for (let newActivity of activities) { 
+         
+                     //for (measurements of newActivity.measurement) {
+                     //    speedArray.push(measurements.speed);
+                         //same uv
+                     //}
+                     responseJson.totalCals += newActivity.calsBurned;
+                     responseJson.totalUV += newActivity.avgUV;
+                     responseJson.totalDuration += newActivity.duration;
+         
+                     responseJson.activities.push(
+                         {
+                          deviceId:       newActivity.deviceId,
+                          averageSpeed:   newActivity.avgSpeed,
+                          averageUV:      newActivity.avgUV,
+                          activityType:   newActivity.type,
+                          date:           newActivity.created,
+                          duration:       newActivity.duration,
+                          calsBurned:      newActivity.calsBurned,
+                          temp:          newActivity.temperture,
+                          humid:         newActivity.humidity
+             
+                         //temperture:  Number,
+                         //humidity:    Number,
+                         //measurement: [{
+                         //    loc:            [newActivity.longitude, newActivity.latitude],
+                         //    uv:             newActivity.uv,
+                         //    speed:         newActivity.speed,
+                         //    timeReported:  newActivity.timeReported, 
+                         //}]            
+                         
+                         
+                     }
+                         
+                     );
+         
+                     numActivities++;
+         
+                 }
+
+                 console.log("@");
+                    
+
+                    }
+
+                    else {
+                       //responseJson.iCnt += 1;
+                    }
+                    console.log("#");
+                    responseJson.iCnt+=1;
+
+                    if (responseJson.iCnt == responseJson.deviceSize) {
+                        responseJson.message = "In the past " + days + " days, you've done " + responseJson.activities.length + " activities!";
+                        return res.status(200).send(JSON.stringify(responseJson));   
+                     }
+                });
+                console.log("*");
+            }
+            console.log("^");
+    });
+    console.log("()");
+    //res.status(200).send(JSON.stringify(responseJson));
 });
 
 
 router.get("/one", function(req, res) {
+
+
     let activityID = req.query.activity;
 
 

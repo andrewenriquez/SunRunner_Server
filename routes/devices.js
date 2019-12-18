@@ -204,9 +204,10 @@ deviceQuery.exec({}, function(err, device) {
         return res.status(400).send(JSON.stringify(responseJson));
     }
     else{
-      userEmail = device.userEmail;
+
+      let userEmail = device.userEmail;
       device.userEmail = "";
-      responseJson.message = "Device: "+device.deviceId+ "successfully updated.";
+      responseJson.message = "Device ID " + req.body.deviceId + " removed from "+userEmail;
     }
     device.save(function(err) {
       if (err) {
@@ -221,8 +222,7 @@ deviceQuery.exec({}, function(err, device) {
 
           
   responseJson.success = true;
-  responseJson.message = "Device ID " + req.body.deviceId + " removed from user.";
-  return res.status(200).json(responseJson);
+  //return res.status(200).json(responseJson);
 });
 });
 
