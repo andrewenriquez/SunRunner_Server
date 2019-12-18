@@ -40,10 +40,14 @@ function getForecastData() {
 }
 
 function displayForecastData(data, textSatus,jqXHR) {
+  var weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  
   let forecastObj = {
     success: true,
     message: "",
     forecast: [],
+
+    
 };
 
   if (data) {
@@ -64,8 +68,8 @@ function displayForecastData(data, textSatus,jqXHR) {
   }
 
   for (let i = 0; i < forecastObj.forecast.length; i++ ){
-    $("#day"+i+"_title").html(forecastObj.forecast[i].day);
 
+    $("#day"+i+"_title").html(weekdays[forecastObj.forecast[i].day]);
 
       $("#day"+i+"_body").append("<p class=\"card-text\">"+forecastObj.forecast[i].summary+"</p>");
       $("#day"+i+"_body").append("<ul> <li>High: "+forecastObj.forecast[i].temperatureMax+"</li>"+
