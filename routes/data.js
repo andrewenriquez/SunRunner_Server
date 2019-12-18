@@ -29,14 +29,20 @@ function authenticateAuthToken(req) {
     }
 }
 
+
+
  function requestWeather(location, activity){
     //Get weather information
     //var APIKEY = fs.readFileSync(path.join(__dirname, '../..', 'weatherAPI')).toString();
-    var APIKEY = "527303e31c944895fd262ec2c68a5c1d";
+    //var APIKEY = "527303e31c944895fd262ec2c68a5c1d";
+    var APIKEY2 = "4913031574b69f29c41a404c564859ee";
     
     let myData = {
+        /*
         url: "http://api.openweathermap.org/data/2.5/weather?lat="+location[1]+
         "&lon="+location[0]+"&APPID="+APIKEY,
+        */
+        url: "https://api.darksky.net/forecast/"+APIKEY2+"/"+location[1]+","+location[0],
         method: 'GET',
     };
 
@@ -47,11 +53,20 @@ function authenticateAuthToken(req) {
 
         else if (body) {
 
-            let jsonData = JSON.parse(body);
-            console.log(jsonData);
+            let apiData = JSON.parse(body);
 
-            activity.temperture = (jsonData.main.temp - 273.15) * 9/5 + 32; //kelving to faren
-            activity.humidity = jsonData.main.humidity;
+            if (apiData.code == 400) {
+
+                activity.temperture = 400; //kelving to faren
+                activity.humidity = 401;
+                //return res.status(400).send(JSON.stringify(responseJson));
+            }
+            
+            else {
+                activity.temperture = apiData.currently.temperature; //kelving to faren
+                activity.humidity = apiData.currently.humidity;
+            }
+
             //return myData;
         }
 
@@ -65,7 +80,6 @@ function authenticateAuthToken(req) {
 
 
     });
-
 
 
 }
