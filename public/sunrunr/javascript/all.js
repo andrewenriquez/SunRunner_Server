@@ -69,7 +69,7 @@ function displayAllData(data, textSatus, jqXHR) {
   
        // $("#sum").append(cardHTML);
         
-        $("button").click(myCallback);
+        
         //activityReport+= "</ul>" //close list before displaying.
        $("#all2").append(cardHTML);
   
@@ -87,6 +87,8 @@ function displayAllData(data, textSatus, jqXHR) {
         $("#calories").html("400");
         $("#duration").text(firstRep);*/
        }
+
+       $("button").click(myCallback);
 
 
 
