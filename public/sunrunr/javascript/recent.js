@@ -27,7 +27,7 @@ function getForecastData() {
   let proxy = "https://cors-anywhere.herokuapp.com/";
 
  $.ajax({
-   url: "https://api.darksky.net/forecast/"+APIKEY2+"/"+lat+","+lon,
+   url: proxy+"https://api.darksky.net/forecast/"+APIKEY2+"/"+lat+","+lon,
    method: 'GET',
    //data: re,
    //headers: { 'x-auth': window.localStorage.getItem("authToken") },
@@ -155,6 +155,7 @@ function displayMostRecentData(data, textSatus, jqXHR) {
       cardHTML +="</div></div></div></div>";
 
       $("button").click(myCallback);
+      //$("#"+firstRep).click(myCallback);
       
       let todayDate = new Date();
       let firstRepDate = new Date(firstRep);
@@ -180,9 +181,14 @@ function displayMostRecentData(data, textSatus, jqXHR) {
       $("#speed").html(speed);
       $("#calories").html("400");
       $("#duration").text(firstRep);*/
-     }
-     $("button").click(myCallback);
-     activityReport+= "</ul>" //close list before displaying.
+
+     
+    
+    }
+    $("button").click(myCallback);
+
+    // $("#"+firstRep).click(myCallback);
+    // activityReport+= "</ul>" //close list before displaying.
     }
   /*
   //What does this do??
@@ -310,7 +316,10 @@ function initRecent() {
       break;
   }
   getRecentData();
-  getForecastData(); //gets forecast for next 6 days
+
+
+  
+  //getForecastData(); //gets forecast for next 6 days
 
 
 }
@@ -339,7 +348,17 @@ function myCallback() {
   id = this.id;
 
   //window.location.search = this.id;
-  window.location.replace("oneActivity.html?activity="+this.id);
+
+  if (this.id == "refreshWeather") {
+    getForecastData();
+  }
+  else {
+    window.location.replace("oneActivity.html?activity="+this.id);
+  }
+
+  //location.reload();
+
+  
   //getOneData();
 }
 
@@ -351,9 +370,13 @@ $(function() {
     window.location.replace("index.html");
   }
   else {
-    initRecent();
-  }
 
+    
+    initRecent();
+
+    
+  }
+  $("button #refreshWeather").click(getForecastData);
 
   // Register event listeners here instead of in init?
 });
