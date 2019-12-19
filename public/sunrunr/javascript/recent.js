@@ -72,7 +72,6 @@ function displayForecastData(data, textSatus,jqXHR) {
   for (let i = 0; i < 6; i++ ){
 
     $("#day"+i+"_title").html(weekdays[forecastObj.forecast[i].day]);
-
       $("#day"+i+"_body").html("<p class=\"card-text\">"+forecastObj.forecast[i].summary+"</p>"+
       "<ul> <li>High: "+forecastObj.forecast[i].temperatureMax+String.fromCharCode(176)+"F</li>"+
       "<li> Low: "+forecastObj.forecast[i].temperatureMin+String.fromCharCode(176)+"F</li>"+
@@ -225,15 +224,23 @@ function displayMostRecentData(data, textSatus, jqXHR) {
 function recentPotholeError(jqXHR, textStatus, errorThrown) {
   // If authentication error, delete the authToken 
   // redirect user to sign-in page (which is index.html)
+
   if( jqXHR.status === 401 ) {
      console.log("error 401");
    //window.localStorage.removeItem("authToken");
    //window.location.replace("index.html");
  } 
  else {
-   $("#potholeText").html("Error: " + status.message);
-   $("#potholeText").show();
+   //$("#potholeText").html("Error: " + status.message);
+   //$("#potholeText").show();
+
+   for (let i = 0; i < 6; i++ ){
+
+    $("#day"+i+"_title").html("Error Loading Weather Forecast.");
+
+   
  } 
+}
 }
 
 // Executes once the google map api is loaded, and then sets up the handler's and calls
