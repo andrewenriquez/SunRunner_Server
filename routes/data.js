@@ -863,7 +863,6 @@ router.get("/delete", function(req, res) {
 router.get("/global", function(req, res) {
     let days = 60;
         //days = parseInt(days);
-        //let iCnt = 0;
         let responseJson = {
             success: true,
             message: "",
@@ -873,7 +872,7 @@ router.get("/global", function(req, res) {
             totalUV: 0,
             totalDuration: 0,
             activitySize: 0,
-            iCnt: 1
+            iCnt: 0
         };
         //devices = ?
         //Authenticate User
@@ -991,7 +990,7 @@ router.get("/local", function(req, res) {
             totalUV: 0,
             totalDuration: 0,
             activitySize: 0,
-            iCnt: 1
+            iCnt: 0
         };
         //devices = ?
         //Authenticate User

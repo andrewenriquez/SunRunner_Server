@@ -87,7 +87,7 @@ const fs = require('fs');
 const http = require('http');
 const https = require('https');
 
-
+/*
 // Certificate
 const privateKey = fs.readFileSync('/etc/letsencrypt/live/yourdomain.com/privkey.pem', 'utf8');
 const certificate = fs.readFileSync('/etc/letsencrypt/live/yourdomain.com/cert.pem', 'utf8');
@@ -111,6 +111,5 @@ httpServer.listen(80, () => {
 httpsServer.listen(443, () => {
 	console.log('HTTPS Server running on port 443');
 });
-
-
+*/
 module.exports = app;
