@@ -15,7 +15,7 @@ $(function() {
   function getRecentData() {
     //console.log("recent button pressed");
    $.ajax({
-     url: '/data/summary',
+     url: '/data/global',
      type: 'GET',
      headers: { 'x-auth': window.localStorage.getItem("authToken") },
      dataType: 'json'
