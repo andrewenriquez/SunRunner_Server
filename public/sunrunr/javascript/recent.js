@@ -151,7 +151,7 @@ function displayMostRecentData(data, textSatus, jqXHR) {
       cardHTML += " </td><td id=\"speed\">"+speed+"</td></tr><tr><td>UV:</td><td id=\"uv\">"+uv+"</td></tr>"
       + "<tr><td>Duration: </td><td>"+duration+" mins</td></tr>"
       + "<tr><td>Temp: </td><td>"+temp+" F</td></tr>"
-      + "<tr><td>Humidity: </td><td>"+humid+" %</td></tr></tbody></table>";
+      + "<tr><td>Humidity: </td><td>"+humid.toFixed(0)+" %</td></tr></tbody></table>";
       cardHTML += "<button id = \""+firstRep+"\" type=\"button\" class=\"btn btn-primary\" data-toggle=\"button\" aria-pressed=\"false\">More Info</button>";
       //cardHTML += 
       cardHTML +="</div></div></div></div>";
