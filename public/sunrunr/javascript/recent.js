@@ -82,6 +82,8 @@ function displayForecastData(data, textSatus,jqXHR) {
     
 
   }
+
+
        
    // $("#day0_title").html(forecastObj.forecast[0].day);
    // $//("#day1").append("<ul> <li>High: "+day1.tempMax+"</li><li> Low: "
@@ -328,7 +330,7 @@ function initRecent() {
   getRecentData();
 
 
-  
+  //if ($("#flag-0").)
   getForecastData(); //gets forecast for next 6 days
 
 
