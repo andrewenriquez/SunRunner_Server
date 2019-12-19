@@ -238,7 +238,7 @@ router.post("/hit", function(req, res) {
                         avgSpeed:       req.body.speed,
                         avgUV:          req.body.uv,
                         deviceId:       req.body.deviceId,
-                        created:        Date.now(),
+                        created:        etime,
                         measurement: [{
                             loc:            [req.body.lon, req.body.lat],
                             uv:             req.body.uv,

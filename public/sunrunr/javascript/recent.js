@@ -38,7 +38,7 @@ function getForecastData() {
 
    .fail(recentPotholeError);
 }
-
+//makes call for forecast
 function displayForecastData(data, textSatus,jqXHR) {
   var weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
   
@@ -77,38 +77,11 @@ function displayForecastData(data, textSatus,jqXHR) {
       "<li> Low: "+forecastObj.forecast[i].temperatureMin+String.fromCharCode(176)+"F</li>"+
       "<li> Himidity: "+forecastObj.forecast[i].humidity.toFixed(0)+"%</li>"+
       "</ul>");
-    //$//("#day1").append("<ul> <li>High: "+day1.tempMax+"</li><li> Low: "
-    //+day1.tempMin+"</li><li>Humidity: "+day1.humidity+"</li><li>"+day1.description+"</li></ul>");
+    
     
 
   }
-
-
-       
-   // $("#day0_title").html(forecastObj.forecast[0].day);
-   // $//("#day1").append("<ul> <li>High: "+day1.tempMax+"</li><li> Low: "
-    //+day1.tempMin+"</li><li>Humidity: "+day1.humidity+"</li><li>"+day1.description+"</li></ul>");
     
-    //$("#day1_title").html(forecastObj[1].forecast.day);
-    //$("#day2").append("<ul> <li>High: "+((day2.tempMax - 273.15) * 9/5 + 32).toFixed(1)+String.fromCharCode(176)+"F</li><li> Low: "+
-    //((day2.tempMin - 273.15) * 9/5 + 32).toFixed(1)+String.fromCharCode(176)+"F</li><li>Humidity: "+day2.humidity+"%</li><li>"+day2.description+"</li></ul>"); 
-
-    //$("#day2_title").html(forecastObj[2].forecast.day);
-    //$("#day3").append("<ul> <li>High: "+((day3.tempMax - 273.15) * 9/5 + 32).toFixed(1)+String.fromCharCode(176)+"F</li><li> Low: "+
-    //((day3.tempMin - 273.15) * 9/5 + 32).toFixed(1)+String.fromCharCode(176)+"F</li><li>Humidity: "+day3.humidity+"%</li><li>"+day3.description+"</li></ul>"); 
-
-    //$("#day3_title").html(forecastObj[3].forecast.day);
-    //$("#day4").append("<ul> <li>High: "+((day4.tempMax - 273.15) * 9/5 + 32).toFixed(1)+String.fromCharCode(176)+"F</li><li> Low: "+
-    //((day4.tempMin - 273.15) * 9/5 + 32).toFixed(1)+String.fromCharCode(176)+"F</li><li>Humidity: "+day4.humidity+"%</li><li>"+day4.description+"</li></ul>");
-    
-    //$("#day4_title").html(forecastObj[4].forecast.day);
-    //$("#day5").append("<ul> <li>High: "+((day5.tempMax - 273.15) * 9/5 + 32).toFixed(1)+String.fromCharCode(176)+"F</li><li> Low: "+
-    //((day5.tempMin - 273.15) * 9/5 + 32).toFixed(1)+String.fromCharCode(176)+"F</li><li>Humidity: "+day5.humidity+"%</li><li>"+day5.description+"</li></ul>"); 
-
-    //$("#day5_title").html(forecastObj[5].forecast.day);
-    //$("#day5").append("<ul> <li>High: "+((day5.tempMax - 273.15) * 9/5 + 32).toFixed(1)+String.fromCharCode(176)+"F</li><li> Low: "+
-    //((day5.tempMin - 273.15) * 9/5 + 32).toFixed(1)+String.fromCharCode(176)+"F</li><li>Humidity: "+day5.humidity+"%</li><li>"+day5.description+"</li></ul>"); 
-
 }
 
 function displayMostRecentData(data, textSatus, jqXHR) {
@@ -170,21 +143,7 @@ function displayMostRecentData(data, textSatus, jqXHR) {
       if (firstRepWeek == 0) { firstRepWeek = 7; } //change to 7 for sundays.
 
       $("#sum").append(cardHTML);
-      
 
-      //$("#todayCards").append(cardHTML);
-
-
-      /*
-      activityReport += "<li>Activity: "
-      +type+", Calories:, Speed: "+speed+", UV Strength: "+uv+
-      ", First Reported: "+firstRep+", last Reported: </li>"
-      $("#test1").append(cardHTML);
-      $("#type").html(type);
-      $("#uv").html(uv);
-      $("#speed").html(speed);
-      $("#calories").html("400");
-      $("#duration").text(firstRep);*/
 
      
     
@@ -194,32 +153,6 @@ function displayMostRecentData(data, textSatus, jqXHR) {
     // $("#"+firstRep).click(myCallback);
     // activityReport+= "</ul>" //close list before displaying.
     }
-  /*
-  //What does this do??
-  let uluru = {lat: latitude, lng: longitude};
-  let map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 10,
-    center: uluru
- });  
-
-  //What does this do??
-  $("#potholeText").html(potholeReport);
-  
- // Add markers for all potholes            
-  for (let pothole of data.potholes) {
-    uluru = {lat: pothole.latitude, lng: pothole.longitude};
-    let marker = new google.maps.Marker({
-        position: uluru,
-        map: map,
-        label: {
-             text: "" + pothole.totalHits,
-             color: 'black',
-             fontSize: "10px"
-        },
-    });
-  }    
-  
-  */
  //getForecastData();
 }
 
@@ -336,25 +269,6 @@ function initRecent() {
 
 }
 
-
-/*
-function test () {
-  $("button").html("unclick");
-
-}
-
- //Need to fix before authenicating.
-// Handle authentication on page load
-
-$(document).ready(function() {
-  getRecentPotholes();
-   $("button").click(getRecentPotholes);
-   // If there's no authToken stored, redirect user to the signin page (i.e., index.html)
-   //if (!window.localStorage.getItem("authToken")) {
-   //   window.location.replace("index.html");
-   //}
-});
-*/
 function myCallback() {
   //console.log(this);
   id = this.id;
