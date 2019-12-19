@@ -78,7 +78,6 @@ function displayForecastData(data, textSatus,jqXHR) {
       "<li> Himidity: "+forecastObj.forecast[i].humidity.toFixed(0)+"%</li>"+
       "</ul>");
     
-    
 
   }
     
