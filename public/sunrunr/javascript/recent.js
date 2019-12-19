@@ -75,7 +75,7 @@ function displayForecastData(data, textSatus,jqXHR) {
       $("#day"+i+"_body").html("<p class=\"card-text\">"+forecastObj.forecast[i].summary+"</p>"+
       "<ul> <li>High: "+forecastObj.forecast[i].temperatureMax+String.fromCharCode(176)+"F</li>"+
       "<li> Low: "+forecastObj.forecast[i].temperatureMin+String.fromCharCode(176)+"F</li>"+
-      "<li> Himidity: "+forecastObj.forecast[i].humidity+"%</li>"+
+      "<li> Himidity: "+forecastObj.forecast[i].humidity.toFixed(0)+"%</li>"+
       "</ul>");
     //$//("#day1").append("<ul> <li>High: "+day1.tempMax+"</li><li> Low: "
     //+day1.tempMin+"</li><li>Humidity: "+day1.humidity+"</li><li>"+day1.description+"</li></ul>");
