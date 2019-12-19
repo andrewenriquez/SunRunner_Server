@@ -73,12 +73,11 @@ function displayForecastData(data, textSatus,jqXHR) {
 
     $("#day"+i+"_title").html(weekdays[forecastObj.forecast[i].day]);
 
-      $("#day"+i+"_body").append("<p class=\"card-text\">"+forecastObj.forecast[i].summary+"</p>");
-      $("#day"+i+"_body").append("<ul> <li>High: "+forecastObj.forecast[i].temperatureMax+String.fromCharCode(176)+"F</li>"+
+      $("#day"+i+"_body").html("<p class=\"card-text\">"+forecastObj.forecast[i].summary+"</p>"+
+      "<ul> <li>High: "+forecastObj.forecast[i].temperatureMax+String.fromCharCode(176)+"F</li>"+
       "<li> Low: "+forecastObj.forecast[i].temperatureMin+String.fromCharCode(176)+"F</li>"+
       "<li> Himidity: "+forecastObj.forecast[i].humidity+"%</li>"+
       "</ul>");
-
     //$//("#day1").append("<ul> <li>High: "+day1.tempMax+"</li><li> Low: "
     //+day1.tempMin+"</li><li>Humidity: "+day1.humidity+"</li><li>"+day1.description+"</li></ul>");
     
@@ -323,7 +322,7 @@ function initRecent() {
 
 
   
-  //getForecastData(); //gets forecast for next 6 days
+  getForecastData(); //gets forecast for next 6 days
 
 
 }
