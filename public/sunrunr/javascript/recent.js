@@ -7,7 +7,7 @@ let id = "123";
 function getRecentData() {
    //console.log("recent button pressed");
   $.ajax({
-    url: '/data/summary',
+    url: '/data/summary2',
     type: 'GET',
     headers: { 'x-auth': window.localStorage.getItem("authToken") },
     dataType: 'json',

@@ -301,6 +301,108 @@ router.post("/hit", function(req, res) {
     });
 });
 
+
+
+
+// GET: Returns all measurements first reported in the previous specified number of days
+// Authentication: Token. A user must be signed in to access this endpoint
+//router.get("/summary2", function(req, res, next) {
+    
+//});
+
+
+//router.get("/summary2", function(req, res, next) {
+    
+
+//});
+
+
+// a middleware sub-stack that handles GET requests to the /user/:id path
+router.get('/summary2', function (req, res) {
+    let day = 7;
+    
+    let responseJson = {
+        success : false,
+        message : "",
+        deviceSize: 0
+    };
+    //devices = ?
+    //Authenticate User
+    if (authenticateRecentEndpoint) {
+        decodedToken = authenticateAuthToken(req);
+        if (!decodedToken) {
+            responseJson.success = false;
+            responseJson.message = "Authentication failed";
+            return res.status(401).json(responseJson);
+        }
+    }
+
+    let userEmail = decodedToken.email;
+
+    //query list of devices by users email. should return a list
+    let deviceQuery = Device.find({
+        "userEmail": 
+        {
+            $eq: userEmail
+        },
+
+    }).sort({ "lastContact": -1 });
+
+    //query callback function when Device.find is done.
+    deviceQuery.exec({}, function(err, userDevices) {
+        query =  {
+            $or : [
+                     { 
+                       $and : [ 
+                               {"deviceId" : ""},
+                               {"created" : { $gte: new Date((new Date().getTime() - (days * 24 * 60 * 60 * 1000))) }}
+                             ]
+                     },
+                     { 
+                        $and : [ 
+                                {"first_name" : "john"},
+                                {"last_name" : "john"}
+                              ]
+                      },
+                   ]
+          } ;
+
+        console.log("device query");
+
+        responseJson.deviceSize = userDevices.length;
+        res.write(JSON.stringify(responseJson));
+
+        //create query object based on how my device Id's the user has.
+        //need all to find all activities.
+        for (let device of userDevices) {
+
+           // { created : { $gte: new Date((new Date().getTime() - (days * 24 * 60 * 60 * 1000))) } }
+            query.$or.push({"deviceId":device.deviceId});
+            }
+
+
+        let activityQuery = Activity.find(query);
+        
+        //callback function for activityQuery find.
+        activityQuery.exec({}, function(err, userActivities) {
+            if (err) {
+                return res.status(400);
+            }
+
+            for (let activities of userActivities) {
+                //console.log(activities);
+
+
+            }
+
+        });
+
+
+    });
+
+});
+
+
 // GET: Returns all measurements first reported in the previous specified number of days
 // Authentication: Token. A user must be signed in to access this endpoint
 router.get("/summary", function(req, res) {
@@ -1094,7 +1196,4 @@ router.get("/local", function(req, res) {
     });
 
            
-
-
-
 module.exports = router;
