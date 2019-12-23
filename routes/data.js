@@ -350,6 +350,7 @@ router.get('/summary2', function (req, res) {
 
     //query callback function when Device.find is done.
     deviceQuery.exec({}, function(err, userDevices) {
+    //create query search here since multiple devices could be found.    
         query =  {
             $or : [
                      { 
