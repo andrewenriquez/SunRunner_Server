@@ -303,23 +303,9 @@ router.post("/hit", function(req, res) {
 
 
 
-
-// GET: Returns all measurements first reported in the previous specified number of days
-// Authentication: Token. A user must be signed in to access this endpoint
-//router.get("/summary2", function(req, res, next) {
-    
-//});
-
-
-//router.get("/summary2", function(req, res, next) {
-    
-
-//});
-
-
-// a middleware sub-stack that handles GET requests to the /user/:id path
+// a id path
 router.get('/summary2', function (req, res) {
-    let day = 7;
+    let days = 30;
     
     let responseJson = {
         success : false,
@@ -352,20 +338,7 @@ router.get('/summary2', function (req, res) {
     deviceQuery.exec({}, function(err, userDevices) {
     //create query search here since multiple devices could be found.    
         query =  {
-            $or : [
-                     { 
-                       $and : [ 
-                               {"deviceId" : ""},
-                               {"created" : { $gte: new Date((new Date().getTime() - (days * 24 * 60 * 60 * 1000))) }}
-                             ]
-                     },
-                     { 
-                        $and : [ 
-                                {"first_name" : "john"},
-                                {"last_name" : "john"}
-                              ]
-                      },
-                   ]
+            $or : []
           } ;
 
         console.log("device query");
@@ -378,23 +351,58 @@ router.get('/summary2', function (req, res) {
         for (let device of userDevices) {
 
            // { created : { $gte: new Date((new Date().getTime() - (days * 24 * 60 * 60 * 1000))) } }
-            query.$or.push({"deviceId":device.deviceId});
+            query.$or.push({
+                $and : [
+                    {"deviceId": device.deviceId},
+                    {"created" : { $gte: new Date((new Date().getTime() - (days * 24 * 60 * 60 * 1000))) }}
+                ]
+            });
             }
-
+        
+        //console.log(query);    
 
         let activityQuery = Activity.find(query);
         
         //callback function for activityQuery find.
         activityQuery.exec({}, function(err, userActivities) {
             if (err) {
-                return res.status(400);
+                responseJson.message = "returned null";
+                return res.status(400).json(responseJson);
             }
-
             for (let activities of userActivities) {
+                responseJson.totalCals += activities.calsBurned;
+                responseJson.totalUV += activities.avgUV;
+                responseJson.totalDuration += activities.duration;
+    
+                responseJson.activities.push(
+                    {
+                     deviceId:       activities.deviceId,
+                     averageSpeed:   activities.avgSpeed,
+                     averageUV:      activities.avgUV,
+                     activityType:   activities.type,
+                     date:           activities.created,
+                     duration:       activities.duration,
+                     calsBurned:      activities.calsBurned,
+                     temp:          activities.temperture,
+                     humid:         activities.humidity
+        
+                    //temperture:  Number,
+                    //humidity:    Number,
+                    //measurement: [{
+                    //    loc:            [newActivity.longitude, newActivity.latitude],
+                    //    uv:             newActivity.uv,
+                    //    speed:         newActivity.speed,
+                    //    timeReported:  newActivity.timeReported, 
+                    //}]            
+                    
+                    
+                }
+                    
+                );
                 //console.log(activities);
-
-
             }
+            responseJson.message = "Summary Activity Data Returned Sucessfully";
+            return res.status(200).send(JSON.stringify(responseJson));
 
         });
 
