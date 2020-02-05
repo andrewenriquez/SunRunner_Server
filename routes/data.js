@@ -344,7 +344,7 @@ router.get('/summary2', function (req, res) {
         console.log("device query");
 
         responseJson.deviceSize = userDevices.length;
-        res.write(JSON.stringify(responseJson));
+        //res.write(JSON.stringify(responseJson));
 
         //create query object based on how my device Id's the user has.
         //need all to find all activities.
