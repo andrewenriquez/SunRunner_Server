@@ -263,7 +263,7 @@ function initRecent() {
 
 
   //if ($("#flag-0").)
-  getForecastData(); //gets forecast for next 6 days
+  //getForecastData(); //gets forecast for next 6 days
 
 
 }

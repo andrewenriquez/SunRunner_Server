@@ -303,14 +303,23 @@ router.post("/hit", function(req, res) {
 
 
 
-// a id path
+/**
+ * Replaced /summary with /summary2 because it doesn't need to do a nested call back.
+ */
 router.get('/summary2', function (req, res) {
-    let days = 30;
+    let days = 50;
     
     let responseJson = {
         success : false,
         message : "",
-        deviceSize: 0
+        deviceSize: 0,
+        activities : [],
+        numActivities: 0,
+        totalCals: 0,
+        totalUV: 0,
+        totalDuration: 0,
+        deviceSize: 0,
+        iCnt: 0
     };
     //devices = ?
     //Authenticate User
@@ -346,8 +355,9 @@ router.get('/summary2', function (req, res) {
         responseJson.deviceSize = userDevices.length;
         //res.write(JSON.stringify(responseJson));
 
-        //create query object based on how my device Id's the user has.
-        //need all to find all activities.
+        //create query object based on how many device Id's the user has.
+        //need all to find all activities. This number is not known since the user can have a lot of 
+        //devices.
         for (let device of userDevices) {
 
            // { created : { $gte: new Date((new Date().getTime() - (days * 24 * 60 * 60 * 1000))) } }
@@ -360,11 +370,15 @@ router.get('/summary2', function (req, res) {
             }
         
         //console.log(query);    
+        let numActivities = 0;
 
         let activityQuery = Activity.find(query);
         
         //callback function for activityQuery find.
         activityQuery.exec({}, function(err, userActivities) {
+
+            let numActivities = 0;
+
             if (err) {
                 responseJson.message = "returned null";
                 return res.status(400).json(responseJson);
@@ -385,25 +399,17 @@ router.get('/summary2', function (req, res) {
                      calsBurned:      activities.calsBurned,
                      temp:          activities.temperture,
                      humid:         activities.humidity
-        
-                    //temperture:  Number,
-                    //humidity:    Number,
-                    //measurement: [{
-                    //    loc:            [newActivity.longitude, newActivity.latitude],
-                    //    uv:             newActivity.uv,
-                    //    speed:         newActivity.speed,
-                    //    timeReported:  newActivity.timeReported, 
-                    //}]            
-                    
                     
                 }
                     
                 );
+                numActivities++;
+
                 //console.log(activities);
             }
+
             responseJson.message = "Summary Activity Data Returned Sucessfully";
             return res.status(200).send(JSON.stringify(responseJson));
-
         });
 
 
