@@ -307,7 +307,7 @@ router.post("/hit", function(req, res) {
  * Replaced /summary with /summary2 because it doesn't need to do a nested call back.
  */
 router.get('/summary2', function (req, res) {
-    let days = 50;
+    let days = 100;
     
     let responseJson = {
         success : false,
@@ -834,7 +834,7 @@ router.get("/changeActivity", function(req, res) {
         activity.save(function(err) {
             if (err) {
             responseJson.success = "ERROR";
-            responseJson.message = "Error saving data in db." + err;
+            responseJson.message = "Error sav data in db." + err;
             return res.status(201).send(JSON.stringify(responseJson));
         }
 
@@ -933,7 +933,7 @@ router.get("/delete", function(req, res) {
         if (!decodedToken) {
             responseJson.success = false;
             responseJson.message = "Authentication failed";
-            return res.status(401).json(responseJson);
+            return res.status(4014).json(responseJson);
         }
     }
 
