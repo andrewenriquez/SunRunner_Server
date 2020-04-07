@@ -86,14 +86,18 @@ function displayMostRecentData(data, textSatus, jqXHR) {
   
   let activityReport = "No activities have been reported this week.";
    if (data.dataEntries.length > 0) {
+    let todayDate = new Date();
 
     //looping through all potholes and concatenating them to a list.
      for (var i = 1; i <= 12; i++) {
 
-      let voltage = data.dataEntries[data.dataEntries.length - 1]["C"+i];
-      let charge = data.dataEntries[data.dataEntries.length - 1].charge;
-      let temp = data.dataEntries[data.dataEntries.length - 1].temp;
-      let firstRep = data.dataEntries[data.dataEntries.length - 1].time;
+      let voltage = data.dataEntries[0]["C"+i];
+      let charge = data.dataEntries[0].charge;
+      let temp = data.dataEntries[0].temp;
+      let firstRep = new Date(data.dataEntries[0].date);
+      let updated = todayDate.getMinutes() - firstRep.getMinutes;
+      
+
       //data.activities[i].averageSpeed.toFixed(1);
       //let uv = data.activities[i].averageUV.toFixed(1);
       //let type = "Cell #"
@@ -109,7 +113,7 @@ function displayMostRecentData(data, textSatus, jqXHR) {
       
       let cardHTML = "<div class=\"col-sm-10 col-md-4 col-lg-3\"><div class=\"mt-2\"><div class=\"card\"><div class=\"card-body\">"
       cardHTML += "<h5 class=\"card-title\" id=\"type\"></h5><h6 class=\"card-subtitle mb-2 text-muted\">Cell: "+i;
-      cardHTML += " </h6><p class=\"card-text\">updated: "+"xx mins ago";
+      cardHTML += " </h6><p class=\"card-text\">updated: "+firstRep;
       cardHTML += "</p><table class=\"table\"><tbody><tr><td>Voltage:</td><td id=\"voltage\">"+voltage+"</td></tr><tr><td>Charge:";
       cardHTML += " </td><td id=\"charge\">"+charge+"</td></tr><tr><td>Temp:</td><td id=\"temp\">"+temp+"</td></tr>"
       + "</tbody></table>";
@@ -120,7 +124,7 @@ function displayMostRecentData(data, textSatus, jqXHR) {
       //$("button").click(myCallback);
       //$("#"+firstRep).click(myCallback);
       
-      let todayDate = new Date();
+    
       let firstRepDate = new Date();
       let todayWeek = todayDate.getDay();
       let firstRepWeek = firstRepDate.getDay();

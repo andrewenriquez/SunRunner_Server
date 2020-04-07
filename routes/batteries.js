@@ -58,7 +58,7 @@ router.get('/bmsdata', function (req, res) {
 
 
 
-        let batteryQuery = Battery.find({});
+        let batteryQuery = Battery.findOne({}).sort( {"date": -1 } );
         
         //callback function for activityQuery find.
         batteryQuery.exec({}, function(err, batteryData) {
@@ -69,27 +69,27 @@ router.get('/bmsdata', function (req, res) {
                 responseJson.message = "returned null";
                 return res.status(400).json(responseJson);
             }
-            for (let data of batteryData) {
 
     
                 responseJson.dataEntries.push(
                     {
-                     C1:       data.cell1,
-                     C2:   data.cell2,
-                     C3:      data.cell3,
-                     C4:   data.cell4,
-                     C5:           data.cell5,
-                     C6:       data.cell6,
-                     C7:       data.cell7,
-                     C8:   data.cell8,
-                     C9:      data.cell9,
-                     C10:   data.cell10,
-                     C11:           data.cell1,
-                     C12:       data.cell12,
-                     voltage:      data.voltage,
-                     temp:          data.temp,
-                     charge:         data.charge,
-                     current:        data.current
+                     C1:       batteryData.cell1,
+                     C2:   batteryData.cell2,
+                     C3:      batteryData.cell3,
+                     C4:   batteryData.cell4,
+                     C5:           batteryData.cell5,
+                     C6:       batteryData.cell6,
+                     C7:       batteryData.cell7,
+                     C8:   batteryData.cell8,
+                     C9:            batteryData.cell9,
+                     C10:           batteryData.cell10,
+                     C11:            batteryData.cell1,
+                     C12:            batteryData.cell12,
+                     voltage:        batteryData.voltage,
+                     temp:           batteryData.temp,
+                     charge:         batteryData.charge,
+                     current:        batteryData.current,
+                     date:           batteryData.date
                     
                 }
                     
@@ -97,7 +97,7 @@ router.get('/bmsdata', function (req, res) {
                 numActivities++;
 
                 //console.log(activities);
-            }
+
 
             responseJson.message = "Summary Activity Data Returned Sucessfully";
             return res.status(200).send(JSON.stringify(responseJson));

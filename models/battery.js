@@ -17,7 +17,7 @@ var deviceSchema = new db.Schema({
     current:      Number,
     charge:     Number,
     temp:       Number,
-    Date: { type: Date, default: Date.now }
+    date: { type: Date, default: Date.now }
 
 });
 
