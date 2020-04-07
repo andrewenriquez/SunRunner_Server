@@ -9,7 +9,7 @@
         "type": "chrome",
         "request": "launch",
         "name": "Launch Chrome",
-        "url": "http://localhost:3000/sunrunr/index.html",
+        "url": "http://localhost:3000/cbms/main.html",
         "webRoot": "${workspaceFolder}/public"
     },
         {

@@ -11,7 +11,10 @@ var usersRouter = require('./routes/users');
 /*labRouter was added per lab 7 instructions*/
 var labRouter = require('./routes/lab');
 //.................................................
-
+//.................................................
+/*labRouter was added per lab 7 instructions*/
+var batteriesRouter = require('./routes/batteries');
+//.................................................
 //---------------------------------------------------
 // Added for final project
 var dataRouter = require('./routes/data');
@@ -63,6 +66,7 @@ app.use('/lab',labRouter);
 app.use('/data', dataRouter);
 
 app.use('/devices', devicesRouter);
+app.use('/batteries', batteriesRouter);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));

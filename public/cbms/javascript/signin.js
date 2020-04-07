@@ -30,6 +30,11 @@ function sendSigninRequest() {
     }
   }
   
+
+  function hello(){
+    print("hello");
+
+  };
   // Handle authentication on page load
   $(function() {  
     // TODO 

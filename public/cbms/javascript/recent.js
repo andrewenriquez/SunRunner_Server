@@ -7,9 +7,9 @@ let id = "123";
 function getRecentData() {
    //console.log("recent button pressed");
   $.ajax({
-    url: '/data/summary2',
+    url: '/batteries/bmsdata',
     type: 'GET',
-    headers: { 'x-auth': window.localStorage.getItem("authToken") },
+    //headers: { 'x-auth': window.localStorage.getItem("authToken") },
     dataType: 'json',
     contentType: 'application/json',
   })
@@ -85,15 +85,15 @@ function displayMostRecentData(data, textSatus, jqXHR) {
 
   
   let activityReport = "No activities have been reported this week.";
-   if (data.activities.length > 0) {
+   if (data.dataEntries.length > 0) {
 
     //looping through all potholes and concatenating them to a list.
      for (var i = 1; i <= 12; i++) {
 
-      let voltage = "XX";
-      let charge = "XX";
-      let temp = "XX";
-      let firstRep = "XX";
+      let voltage = data.dataEntries[data.dataEntries.length - 1]["C"+i];
+      let charge = data.dataEntries[data.dataEntries.length - 1].charge;
+      let temp = data.dataEntries[data.dataEntries.length - 1].temp;
+      let firstRep = data.dataEntries[data.dataEntries.length - 1].time;
       //data.activities[i].averageSpeed.toFixed(1);
       //let uv = data.activities[i].averageUV.toFixed(1);
       //let type = "Cell #"
@@ -246,48 +246,21 @@ function initRecent() {
       $("#sixDaysAgo").html("SUNDAY");
       break;
   }
-  getRecentData();
+  //getRecentData();
 
 
   //if ($("#flag-0").)
-  getForecastData(); //gets forecast for next 6 days
+  //getForecastData(); //gets forecast for next 6 days
 
 
 }
 
-function myCallback() {
-  //console.log(this);
-  id = this.id;
-
-  //window.location.search = this.id;
-
-  if (this.id == "refreshWeather") {
-    getForecastData();
-  }
-  else {
-    window.location.replace("oneActivity.html?activity="+this.id);
-  }
-
-  //location.reload();
-
-  
-  //getOneData();
-}
 
 // Handle authentication on page load
 $(function() {
   // If there's no authToekn stored, redirect user to 
   // the sign-in page (which is index.html)
-  if (!window.localStorage.getItem("authToken")) {
-    window.location.replace("index.html");
-  }
-  else {
-
-    
-    initRecent();
-
-    
-  }
+  getRecentData();
   $("button #refreshWeather").click(getForecastData);
 
   // Register event listeners here instead of in init?
