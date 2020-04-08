@@ -265,7 +265,6 @@ $(function() {
   // If there's no authToekn stored, redirect user to 
   // the sign-in page (which is index.html)
   getRecentData();
-  $("button #refreshWeather").click(getForecastData);
 
   // Register event listeners here instead of in init?
 });
