@@ -63,11 +63,11 @@ router.get('/bmsdata', function (req, res) {
         //callback function for activityQuery find.
         batteryQuery.exec({}, function(err, batteryData) {
 
-            if (batteryData == null) {
-              responseJson.message = "no info yet.";
-              return res.status(300).send(JSON.stringify(responseJson));
+            // if (batteryData == null) {
+            //   responseJson.message = "no info yet.";
+            //   return res.status(300).send(JSON.stringify(responseJson));
 
-            }
+            // }
 
             let numActivities = 0;
 
