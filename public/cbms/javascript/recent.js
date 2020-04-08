@@ -77,7 +77,7 @@ function displayMostRecentData(data, textSatus, jqXHR) {
      
     
     }
-    $("button").click(myCallback);
+    //$("button").click(myCallback);
 
     // $("#"+firstRep).click(myCallback);
     // activityReport+= "</ul>" //close list before displaying.
