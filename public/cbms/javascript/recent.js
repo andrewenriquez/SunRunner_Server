@@ -9,7 +9,7 @@ function getRecentData() {
   $.ajax({
     url: '/batteries/bmsdata',
     type: 'GET',
-    //headers: { 'x-auth': window.localStorage.getItem("authToken") },
+    headers: { 'x-auth': window.localStorage.getItem("authToken") },
     dataType: 'json',
     contentType: 'application/json',
   })
@@ -18,69 +18,7 @@ function getRecentData() {
 
 }
 
-function getForecastData() {
-  //console.log("recent button pressed");
-  //var APIKEY = "527303e31c944895fd262ec2c68a5c1d";
-  var APIKEY2 = "4913031574b69f29c41a404c564859ee";
-  let lon = "-110.950111";
-  let lat = "32.231884";
-  let proxy = "https://cors-anywhere.herokuapp.com/";
-
- $.ajax({
-   url: proxy+"https://api.darksky.net/forecast/"+APIKEY2+"/"+lat+","+lon,
-   method: 'GET',
-   //data: re,
-   //headers: { 'x-auth': window.localStorage.getItem("authToken") },
-   headers: { "Access-Control-Allow-Origin": "*" },
-   dataType: 'json'
- })
-   .done(displayForecastData)
-
-   .fail(recentPotholeError);
-}
-//makes call for forecast
-function displayForecastData(data, textSatus,jqXHR) {
-  var weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-  
-  let forecastObj = {
-    success: true,
-    message: "",
-    forecast: [],
-
-    
-};
-
-  if (data) {
-    //console.log(data.message);
-
-    for (let days of data.daily.data) {
-      
-               
-      forecastObj.forecast.push({
-         day            : new Date(days.time * 1000).getDay(),
-         temperatureMax : days.temperatureMax,
-         temperatureMin : days.temperatureMin,
-         humidity       : days.humidity * 100,
-         summary        : days.summary
-      });
-
-   }  
-
-  }
-
-
-  for (let i = 1; i < 13; i++ ){
-
-    $("#day"+i+"_title").html("Cell "+ i);
-      $("#day"+i+"_body").html("<ul class='list-group'><li class='list-group-item'>Voltage: </li>"+
-      "<li class='list-group-item'>Charge: </li>"+
-      "<li class='list-group-item'>Temperature: </li>"+
-    "</ul>");    
-
-  }
-    
-}
-
+//makes call for forecas
 function displayMostRecentData(data, textSatus, jqXHR) {
 
   
@@ -170,94 +108,7 @@ function recentPotholeError(jqXHR, textStatus, errorThrown) {
 
 // Executes once the google map api is loaded, and then sets up the handler's and calls
 // getRecentPotholes() to display the recent potholes
-function initRecent() {
-  
-  let todayDate = new Date();
-  let todayWeek = todayDate.getDay();
 
-  switch(todayWeek) {
-    case 0:                      //sunday
-      //change page
-      $("#today").html("SUNDAY (Today)");
-      $("#yesterday").html("SATURDAY (Yesterday)");
-      $("#twoDaysAgo").html("FRIDAY");
-      $("#threeDaysAgo").html("THURSDAY");
-      $("#fourDaysAgo").html("WEDNESDAY");
-      $("#fiveDaysAgo").html("TUESDAY");
-      $("#sixDaysAgo").html("MONDAY");
-      break;
-
-    case 1:
-      //change page
-      $("#today").html("MONDAY (Today)");
-      $("#yesterday").html("SUNDAY (Yesterday)");
-      $("#twoDaysAgo").html("SATURDAY");
-      $("#threeDaysAgo").html("FRIDAY");
-      $("#fourDaysAgo").html("THURSDAY");
-      $("#fiveDaysAgo").html("WEDNESDAY");
-      $("#sixDaysAgo").html("TUESDAY");
-
-      break;
-
-    case 2:
-      $("#today").html("TUESDAY (Today)");
-      $("#yesterday").html("MONDAY (Yesterday)");
-      $("#twoDaysAgo").html("SUNDAY");
-      $("#threeDaysAgo").html("SATURDAY");
-      $("#fourDaysAgo").html("FRIDAY");
-      $("#fiveDaysAgo").html("THURSDAY");
-      $("#sixDaysAgo").html("WEDNESDAY");      
-      break;
-
-    case 3:
-      $("#today").html("WEDNESDAY (Today)");
-      $("#yesterday").html("TUESDAY (Yesterday)");
-      $("#twoDaysAgo").html("MONDAY");
-      $("#threeDaysAgo").html("SUNDAY");
-      $("#fourDaysAgo").html("SATURDAY");
-      $("#fiveDaysAgo").html("FRIDAY");
-      $("#sixDaysAgo").html("THURSDAY");     
-      break;
-
-    case 4:
-      $("#today").html("THURSDAY (Today)");
-      $("#yesterday").html("WEDNESDAY (Yesterday)");
-      $("#twoDaysAgo").html("TUESDAY");
-      $("#threeDaysAgo").html("MONDAY");
-      $("#fourDaysAgo").html("SUNDAY");
-      $("#fiveDaysAgo").html("SATURDAY");
-      $("#sixDaysAgo").html("FRIDAY");
-
-      break;
-      
-    case 5:
-      $("#today").html("FRIDAY (Today)");
-      $("#yesterday").html("THURSDAY (Yesterday)");
-      $("#twoDaysAgo").html("WEDNESDAY");
-      $("#threeDaysAgo").html("TUESDAY");
-      $("#fourDaysAgo").html("MONDAY");
-      $("#fiveDaysAgo").html("SUNDAY");
-      $("#sixDaysAgo").html("SATURDAY");    
-      break;
-
-    case 6:
-      $("#today").html("SATURDAY (Today)");
-      $("#yesterday").html("FRIDAY (Yesterday)");
-      $("#twoDaysAgo").html("THURSDAY");
-      $("#threeDaysAgo").html("WEDNESDAY");
-      $("#fourDaysAgo").html("TUESDAY");
-      $("#fiveDaysAgo").html("MONDAY");
-      $("#sixDaysAgo").html("SUNDAY");
-      break;
-  }
-  //getRecentData();
-
-
-  //if ($("#flag-0").)
-  //getForecastData(); //gets forecast for next 6 days
-
-
-}
 
 
 // Handle authentication on page load
