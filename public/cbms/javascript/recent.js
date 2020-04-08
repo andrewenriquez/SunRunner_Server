@@ -24,6 +24,7 @@ function displayMostRecentData(data, textSatus, jqXHR) {
   
   let activityReport = "No activities have been reported this week.";
    if (data.dataEntries.length > 0) {
+    console.log(data.dataEntries.length);
     let todayDate = new Date();
 
     //looping through all potholes and concatenating them to a list.
